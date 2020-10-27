@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using GroupFPS.Weapons;
 
 namespace GroupFPS.Player
 {
@@ -28,7 +29,7 @@ namespace GroupFPS.Player
         InputAction jumpAction;
         InputAction fireAction;
         [Header("Guns and Shooting")]
-
+        [SerializeField] GeneralGun currentGunTemp; //temp
         [Header("Animation")]
         public Animator anim;//animator component on the player
         #endregion
@@ -118,7 +119,7 @@ namespace GroupFPS.Player
 
         private void OnFirePerformed(InputAction.CallbackContext _context)
         {
-
+            currentGunTemp.Shoot();
         }
         private void OnFireCanceled(InputAction.CallbackContext _context)
         {
