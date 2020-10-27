@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using GroupFPS.Weapons;
+using TMPro;
 
 namespace GroupFPS.Player
 {
@@ -27,6 +28,7 @@ namespace GroupFPS.Player
         InputAction moveAction;
         InputAction lookAction;
         InputAction jumpAction;
+        InputAction reloadAction;
         InputAction fireAction;
         [Header("Guns and Shooting")]
         [SerializeField] GeneralGun currentGunTemp; //temp
@@ -105,10 +107,13 @@ namespace GroupFPS.Player
             jumpAction = playerInput.actions.FindAction("Jump");
             jumpAction.Enable();
 
+            reloadAction = playerInput.actions.FindAction("Reload");
+            reloadAction.Enable();
+            reloadAction.performed += OnReloadPerformed;
+
             fireAction = playerInput.actions.FindAction("Fire");
             fireAction.Enable();
             fireAction.performed += OnFirePerformed;
-            fireAction.canceled += OnFireCanceled;
             #endregion
         }
         private void Update()
@@ -121,9 +126,9 @@ namespace GroupFPS.Player
         {
             currentGunTemp.Shoot();
         }
-        private void OnFireCanceled(InputAction.CallbackContext _context)
+        private void OnReloadPerformed(InputAction.CallbackContext _context)
         {
-
+            currentGunTemp.Reload();
         }
     }
 }

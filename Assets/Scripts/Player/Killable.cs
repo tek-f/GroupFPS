@@ -6,4 +6,9 @@ public class Killable : MonoBehaviour
 {
     protected bool alive;
     protected int health;
+
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+    }
 }
