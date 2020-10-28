@@ -98,7 +98,7 @@ namespace GroupFPS.Player
         {
             if(equipedWeapons.Count > 1)
             {
-                currentGun = 
+                //currentGun = 
             }
         }
         private void Awake()
@@ -158,7 +158,7 @@ namespace GroupFPS.Player
         }
         private void OnSwapPerformed(InputAction.CallbackContext _context)
         {
-            currentGun.();
+            //currentGun.();
         }
     }
 }
