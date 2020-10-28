@@ -13,8 +13,8 @@ namespace GroupFPS.Weapons
         [Header("Gun Metrics")]
         [SerializeField] protected float range;
         [Header("UI")]
-        [SerializeField] TMP_Text clipText;
-        [SerializeField] TMP_Text ammoPoolText;
+        [SerializeField] protected TMP_Text clipText;
+        [SerializeField] protected TMP_Text ammoPoolText;
 
         public float Range
         {
@@ -71,10 +71,10 @@ namespace GroupFPS.Weapons
                     }
                 }
                 currentClip--;
-                clipText.text = currentClip + " / " + maxClip;
+                UpdateUI();
             }
         }
-        public void Reload()
+        public virtual void Reload()
         {
             if(currentClip < maxClip && currentAmmoPool > 0)
             {
@@ -88,14 +88,16 @@ namespace GroupFPS.Weapons
                     currentAmmoPool -= (maxClip - currentClip);
                     currentClip = maxClip;
                 }
-                clipText.text = currentClip + " / " + maxClip;
-                ammoPoolText.text = currentAmmoPool.ToString();
+                UpdateUI();
             }
         }
-        private void Awake()
+        public virtual void UpdateUI()
         {
-            damage = 5;
-            maxClip = 30;
+            clipText.text = currentClip + " / " + maxClip;
+            ammoPoolText.text = currentAmmoPool.ToString();
+        }
+        protected virtual void Awake()
+        {
             currentClip = maxClip;
             currentAmmoPool = maxClip * 3;
         }

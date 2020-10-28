@@ -31,7 +31,9 @@ namespace GroupFPS.Player
         InputAction reloadAction;
         InputAction fireAction;
         [Header("Guns and Shooting")]
-        [SerializeField] GeneralGun currentGunTemp; //temp
+        [SerializeField] GeneralGun currentGun;
+        List<GeneralGun> equipedWeapons = new List<GeneralGun>();
+        int currentGunID;
         [Header("Animation")]
         public Animator anim;//animator component on the player
         #endregion
@@ -90,8 +92,14 @@ namespace GroupFPS.Player
         private void Awake()
         {
             Cursor.lockState = CursorLockMode.Locked;
-            cameraTransform = GameObject.FindWithTag("MainCamera").GetComponent<Camera>().transform;
+            cameraTransform = gameObject.GetComponentInChildren<Camera>().transform;
             charControl = gameObject.GetComponent<CharacterController>();
+
+            #region Initial Gun Set Up
+            equipedWeapons.Add(currentGun);
+            currentGunID = 0;
+            currentGun.UpdateUI();
+            #endregion
         }
         private void Start()
         {
@@ -124,11 +132,11 @@ namespace GroupFPS.Player
 
         private void OnFirePerformed(InputAction.CallbackContext _context)
         {
-            currentGunTemp.Shoot();
+            currentGun.Shoot();
         }
         private void OnReloadPerformed(InputAction.CallbackContext _context)
         {
-            currentGunTemp.Reload();
+            currentGun.Reload();
         }
     }
 }
