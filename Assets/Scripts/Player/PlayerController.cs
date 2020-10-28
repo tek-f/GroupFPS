@@ -33,10 +33,12 @@ namespace GroupFPS.Player
         InputAction swapAction;
         [Header("Guns and Shooting")]
         [SerializeField] GeneralGun currentGun;
-        List<GeneralGun> equipedWeapons = new List<GeneralGun>();
-        int currentGunID;
+        [SerializeField] List<GeneralGun> loadout = new List<GeneralGun>();
+        int equipedGunID;
         [Header("Animation")]
         public Animator anim;//animator component on the player
+        [Header("TESTING")]
+        public GeneralGun secondaryGun;
         #endregion
         void MouseLook(Vector2 inputVector)
         {
@@ -91,14 +93,28 @@ namespace GroupFPS.Player
         }
         public void PickUpWeapon(GeneralGun gunToPickUp)
         {
-            equipedWeapons.Add(gunToPickUp);//add the gun to the list equipedWeapons
+            loadout.Add(gunToPickUp);//add the gun to the list equipedWeapons
             currentGun = gunToPickUp; //switch to the picked up gun
+            equipedGunID = loadout.FindInstanceID(currentGun);//set the tracker for 
         }
         public void SwapWeapon()
         {
-            if(equipedWeapons.Count > 1)
+            Debug.Log("swap started");
+            if(loadout.Count > 1)
             {
-                //currentGun = 
+                Debug.Log("load count > 1");
+                currentGun.gameObject.SetActive(false);
+                if(equipedGunID == loadout.Count - 1)
+                {
+                    equipedGunID = 0;
+                }
+                else
+                {
+                    equipedGunID++;
+                }
+                currentGun = loadout[equipedGunID];
+                currentGun.gameObject.SetActive(true);
+                Debug.Log("swap complete");
             }
         }
         private void Awake()
@@ -108,11 +124,13 @@ namespace GroupFPS.Player
             charControl = gameObject.GetComponent<CharacterController>();
 
             #region Initial Gun (Pistol) Set Up
-            equipedWeapons.Add(currentGun);
-            currentGunID = 0;
+            loadout.Add(currentGun);
+            equipedGunID = 0;
             currentGun.PlayerSetUp(gameObject);
             currentGun.UpdateUI();
             #endregion
+
+
 
         }
         private void Start()
@@ -129,7 +147,7 @@ namespace GroupFPS.Player
             jumpAction = playerInput.actions.FindAction("Jump");
             jumpAction.Enable();
 
-            reloadAction = playerInput.actions.FindAction("Swap");
+            swapAction = playerInput.actions.FindAction("Swap");
             swapAction.Enable();
             swapAction.performed += OnSwapPerformed;
 
@@ -158,7 +176,7 @@ namespace GroupFPS.Player
         }
         private void OnSwapPerformed(InputAction.CallbackContext _context)
         {
-            //currentGun.();
+            SwapWeapon();
         }
     }
 }
