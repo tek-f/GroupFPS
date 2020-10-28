@@ -30,6 +30,7 @@ namespace GroupFPS.Player
         InputAction jumpAction;
         InputAction reloadAction;
         InputAction fireAction;
+        InputAction swapAction;
         [Header("Guns and Shooting")]
         [SerializeField] GeneralGun currentGun;
         List<GeneralGun> equipedWeapons = new List<GeneralGun>();
@@ -87,7 +88,18 @@ namespace GroupFPS.Player
                 Debug.Log("jump");
                 velocity.y += Mathf.Sqrt(jumpSpeed * -1 * gravity);
             }
-            
+        }
+        public void PickUpWeapon(GeneralGun gunToPickUp)
+        {
+            equipedWeapons.Add(gunToPickUp);//add the gun to the list equipedWeapons
+            currentGun = gunToPickUp; //switch to the picked up gun
+        }
+        public void SwapWeapon()
+        {
+            if(equipedWeapons.Count > 1)
+            {
+                currentGun = 
+            }
         }
         private void Awake()
         {
@@ -95,11 +107,13 @@ namespace GroupFPS.Player
             cameraTransform = gameObject.GetComponentInChildren<Camera>().transform;
             charControl = gameObject.GetComponent<CharacterController>();
 
-            #region Initial Gun Set Up
+            #region Initial Gun (Pistol) Set Up
             equipedWeapons.Add(currentGun);
             currentGunID = 0;
+            currentGun.PlayerSetUp(gameObject);
             currentGun.UpdateUI();
             #endregion
+
         }
         private void Start()
         {
@@ -114,6 +128,10 @@ namespace GroupFPS.Player
 
             jumpAction = playerInput.actions.FindAction("Jump");
             jumpAction.Enable();
+
+            reloadAction = playerInput.actions.FindAction("Swap");
+            swapAction.Enable();
+            swapAction.performed += OnSwapPerformed;
 
             reloadAction = playerInput.actions.FindAction("Reload");
             reloadAction.Enable();
@@ -137,6 +155,10 @@ namespace GroupFPS.Player
         private void OnReloadPerformed(InputAction.CallbackContext _context)
         {
             currentGun.Reload();
+        }
+        private void OnSwapPerformed(InputAction.CallbackContext _context)
+        {
+            currentGun.();
         }
     }
 }

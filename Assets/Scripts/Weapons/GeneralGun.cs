@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GroupFPS.Player;
 using TMPro;
 
 namespace GroupFPS.Weapons
@@ -11,11 +12,7 @@ namespace GroupFPS.Weapons
         [Header("Set Up")]
         [SerializeField] Camera playerCamera;
         [Header("Gun Metrics")]
-        [SerializeField] protected float range;
-        [Header("UI")]
-        [SerializeField] protected TMP_Text clipText;
-        [SerializeField] protected TMP_Text ammoPoolText;
-
+        protected float range;
         public float Range
         {
             get
@@ -52,9 +49,20 @@ namespace GroupFPS.Weapons
                 return currentAmmoPool;
             }
         }
+        [Header("UI")]
+        [SerializeField] protected TMP_Text clipText;
+        [SerializeField] protected TMP_Text ammoPoolText;
+
         [Header("Animation")]
         Animator animator;
         #endregion
+
+        public void PlayerSetUp(GameObject _player)
+        {
+            playerCamera = _player.GetComponentInChildren<Camera>();
+            clipText = _player.GetComponent<PlayerReferences>().clipText;
+            ammoPoolText = _player.GetComponent<PlayerReferences>().ammoPoolText;
+        }
 
         public void Shoot()
         {
