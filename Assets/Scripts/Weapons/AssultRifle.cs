@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using GroupFPS.Weapons;
+using GunBall.Weapons;
 
-namespace GroupFPS.Weapons
+namespace GunBall.Weapons
 {
     public class AssultRifle : GeneralGun
     {
@@ -12,6 +12,7 @@ namespace GroupFPS.Weapons
             damage = 10;
             range = 25;
             maxClip = 30;
+            //set the guns player location
             base.Awake();
         }
     }

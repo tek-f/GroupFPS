@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using GroupFPS.Weapons;
+using GunBall.Weapons;
 using TMPro;
 
-namespace GroupFPS.Player
+namespace GunBall.Player
 {
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerController : MonoBehaviour
@@ -31,7 +31,7 @@ namespace GroupFPS.Player
         InputAction reloadAction;
         InputAction fireAction;
         InputAction swapAction;
-        [Header("Guns and Shooting")]
+        [Header("Guns")]
         [SerializeField] GeneralGun currentGun;
         [SerializeField] List<GeneralGun> loadout = new List<GeneralGun>();
         int equipedGunID;
@@ -94,15 +94,12 @@ namespace GroupFPS.Player
         public void PickUpWeapon(GeneralGun gunToPickUp)
         {
             loadout.Add(gunToPickUp);//add the gun to the list equipedWeapons
-            currentGun = gunToPickUp; //switch to the picked up gun
-            equipedGunID = loadout.FindInstanceID(currentGun);//set the tracker for 
+            SwapWeapon();
         }
         public void SwapWeapon()
         {
-            Debug.Log("swap started");
             if(loadout.Count > 1)
             {
-                Debug.Log("load count > 1");
                 currentGun.gameObject.SetActive(false);
                 if(equipedGunID == loadout.Count - 1)
                 {
@@ -114,8 +111,8 @@ namespace GroupFPS.Player
                 }
                 currentGun = loadout[equipedGunID];
                 currentGun.gameObject.SetActive(true);
-                Debug.Log("swap complete");
             }
+            currentGun.UpdateUI();
         }
         private void Awake()
         {
@@ -129,9 +126,6 @@ namespace GroupFPS.Player
             currentGun.PlayerSetUp(gameObject);
             currentGun.UpdateUI();
             #endregion
-
-
-
         }
         private void Start()
         {

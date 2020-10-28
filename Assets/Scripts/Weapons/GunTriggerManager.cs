@@ -1,17 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GunBall.Player;
 
-public class GunTriggerManager : MonoBehaviour
+namespace GunBall.Weapons
 {
-    GameObject gunPrefab;//prefab for the gun that is assigned to this trigger
-    int teamID;
-
-    private void OnTriggerEnter(Collider other)
+    public class GunTriggerManager : MonoBehaviour
     {
-        if(other.CompareTag("Player"))
-        {
+        [SerializeField] GameObject gunPrefab;//prefab for the gun that is assigned to this trigger
+        int teamID;
 
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Player"))
+            {
+                PlayerController player = other.GetComponent<PlayerController>();
+                Camera playerCamera = player.GetComponentInChildren<Camera>();
+                GeneralGun newGun = Instantiate(gunPrefab, playerCamera.transform).GetComponent<GeneralGun>();
+                newGun.PlayerSetUp(other.gameObject);
+                other.GetComponent<PlayerController>().PickUpWeapon(newGun);
+            }
         }
     }
 }

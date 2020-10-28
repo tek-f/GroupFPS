@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-namespace GroupFPS.Player
+namespace GunBall.Player
 {
     public class PlayerReferences : MonoBehaviour
     {

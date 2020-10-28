@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using GroupFPS.Weapons;
+using GunBall.Weapons;
 
-namespace GroupFPS.Weapons
+namespace GunBall.Weapons
 {
     public class Pistol : GeneralGun
     {
@@ -27,6 +27,7 @@ namespace GroupFPS.Weapons
             range = 20;
             maxClip = 10;
             currentClip = maxClip;
+            //set the guns player location
         }
     }
 }

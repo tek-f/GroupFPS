@@ -1,18 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using GroupFPS.Player;
+using GunBall.Player;
 using TMPro;
 
-namespace GroupFPS.Weapons
+namespace GunBall.Weapons
 {
     public class GeneralGun : MonoBehaviour
     {
         #region Variables
         [Header("Set Up")]
-        [SerializeField] Camera playerCamera;
+        [SerializeField] Camera playerCamera;//reference var for the players camera
         [Header("Gun Metrics")]
-        protected float range;
+        Vector3 gunPlayerLocation = new Vector3(0.32f, -0.293f, 0.662f);//the location the gun is relative to the players camera when the gun is equiped by tbe player, used when the gun is picked up by the player
+        public Vector3 GunPlayerLocation
+        {
+            get
+            {
+                return gunPlayerLocation;
+            }
+        }
+        protected float range;//the guns range
         public float Range
         {
             get
