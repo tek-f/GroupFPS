@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using GunBall.Weapons;
+using GunBall.Ball;
 using TMPro;
 
 namespace GunBall.Player
@@ -34,7 +35,19 @@ namespace GunBall.Player
         [Header("Guns")]
         [SerializeField] GeneralGun currentGun;
         [SerializeField] List<GeneralGun> loadout = new List<GeneralGun>();
+        public int LoadoutCount
+        {
+            get
+            {
+                return loadout.Count;
+            }
+        }
         int equipedGunID;
+        [Header("Ball")]
+        bool holdingBall, ballInReach;
+        Vector3 ballPosition;
+        [SerializeField] float ballPickUpDistance;
+        [SerializeField] GameObject ballPickUpIndicatorUI;
         [Header("Animation")]
         public Animator anim;//animator component on the player
         [Header("TESTING")]
@@ -79,26 +92,38 @@ namespace GunBall.Player
                 }
             }
 
-            Vector3 move = (transform.right * x) + (transform.forward * z);
-            charControl.Move(move * speed * Time.deltaTime);
+            Vector3 move = (transform.right * x) + (transform.forward * z) * speed;
+            charControl.Move(move * Time.deltaTime);
 
             velocity.y += gravity * Time.deltaTime;
             charControl.Move(velocity * Time.deltaTime);
+
 
             if (jumpAction.ReadValue<float>() == 1 && groundedCheck)
             {
                 Debug.Log("jump");
                 velocity.y += Mathf.Sqrt(jumpSpeed * -1 * gravity);
             }
+
         }
         public void PickUpWeapon(GeneralGun gunToPickUp)
         {
-            loadout.Add(gunToPickUp);//add the gun to the list equipedWeapons
-            SwapWeapon();
+            if (loadout.Count < 2)
+            {
+                loadout.Add(gunToPickUp);//add the gun to the list equipedWeapons
+                SwapWeapon();
+            }
+        }
+        public void PickUpBall(GameObject ball)
+        {
+            holdingBall = true;
+            currentGun.gameObject.SetActive(false);
+            ball.transform.SetParent(gameObject.transform);
+            ball.transform.localPosition = ballPosition;
         }
         public void SwapWeapon()
         {
-            if(loadout.Count > 1)
+            if(loadout.Count > 1 && !holdingBall)
             {
                 currentGun.gameObject.SetActive(false);
                 if(equipedGunID == loadout.Count - 1)
@@ -158,6 +183,20 @@ namespace GunBall.Player
         {
             MouseLook(lookAction.ReadValue<Vector2>());
             PlayerMovement(moveAction.ReadValue<Vector2>());
+            RaycastHit raycastHit;
+            if(Physics.Raycast(cameraTransform.position, cameraTransform.forward, out raycastHit, ballPickUpDistance))
+            {
+                if(raycastHit.transform.GetComponent<GeneralBall>())
+                {
+                    ballPickUpIndicatorUI.SetActive(true);
+                    ballInReach = true;
+                }
+                else
+                {
+                    ballPickUpIndicatorUI.SetActive(false);
+                    ballInReach = false;
+                }
+            }
         }
 
         private void OnFirePerformed(InputAction.CallbackContext _context)

@@ -15,10 +15,13 @@ namespace GunBall.Weapons
             if (other.CompareTag("Player"))
             {
                 PlayerController player = other.GetComponent<PlayerController>();
-                Camera playerCamera = player.GetComponentInChildren<Camera>();
-                GeneralGun newGun = Instantiate(gunPrefab, playerCamera.transform).GetComponent<GeneralGun>();
-                newGun.PlayerSetUp(other.gameObject);
-                other.GetComponent<PlayerController>().PickUpWeapon(newGun);
+                if(player.LoadoutCount < 2)
+                {
+                    Camera playerCamera = player.GetComponentInChildren<Camera>();
+                    GeneralGun newGun = Instantiate(gunPrefab, playerCamera.transform).GetComponent<GeneralGun>();
+                    newGun.PlayerSetUp(other.gameObject);
+                    other.GetComponent<PlayerController>().PickUpWeapon(newGun);
+                }
             }
         }
     }
