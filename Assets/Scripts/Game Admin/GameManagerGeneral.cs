@@ -31,9 +31,9 @@ namespace GunBall.Game
             #endregion
 
             //TEMP
-            PlayerController newPlayer = Instantiate(playerPrefab).GetComponent<PlayerController>();
-            newPlayer.PlayerSetUp(gameBall);
-            AddPlayerToTeam(newPlayer);
+            //PlayerController newPlayer = Instantiate(playerPrefab).GetComponent<PlayerController>();
+            //newPlayer.PlayerSetUp(gameBall);
+            //AddPlayerToTeam(newPlayer);
         }
         public void AddPlayerToTeam(PlayerController player)
         {

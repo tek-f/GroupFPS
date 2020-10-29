@@ -73,7 +73,7 @@ namespace GunBall.Weapons
             ammoPoolText = _player.GetComponent<PlayerReferences>().ammoPoolText;
         }
 
-        public void Shoot()
+        public virtual void Shoot()
         {
             if (currentClip > 0)
             {

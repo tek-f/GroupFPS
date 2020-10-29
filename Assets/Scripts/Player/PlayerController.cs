@@ -334,6 +334,9 @@ namespace GunBall.Player
             testAction.Enable();
             testAction.performed += OnTestPerformed;
             #endregion
+
+            //TEMP
+            PlayerSetUp(GameObject.FindWithTag("Ball").GetComponent<GeneralBall>());
         }
         private void Update()
         {
