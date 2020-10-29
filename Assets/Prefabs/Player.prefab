@@ -148,9 +148,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   teamID: 0
   mouseSensitivity: 25
-  speed: 10
+  currentSpeed: 2
+  normalSpeed: 5
+  sprintSpeed: 10
+  crouchSpeed: 2
   jumpSpeed: 10
   gravity: -10
+  isCrouching: 0
+  isSprinting: 0
   velocity: {x: 0, y: 0, z: 0}
   groundLayerMask:
     serializedVersion: 2
@@ -990,6 +995,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 0}
+  player: {fileID: 0}
   clipText: {fileID: 0}
   ammoPoolText: {fileID: 0}
 --- !u!114 &1382769189477736778

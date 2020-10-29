@@ -80,6 +80,58 @@ namespace GunBall.Player
         [Header("Animation")]
         public Animator anim;//animator component on the player
         #endregion
+
+        #region Input Performed
+        private void OnJumpPerformed(InputAction.CallbackContext _context)
+        {
+            if (groundedCheck)
+            {
+                Debug.Log("jump");
+                velocity.y += jumpSpeed;
+            }
+        }
+        private void OnFirePerformed(InputAction.CallbackContext _context)
+        {
+            if (!holdingBall)
+            {
+                currentGun.Shoot();
+            }
+        }
+        private void OnReloadPerformed(InputAction.CallbackContext _context)
+        {
+            if (!holdingBall)
+            {
+                currentGun.Reload();
+            }
+        }
+        private void OnSwapPerformed(InputAction.CallbackContext _context)
+        {
+            if (!holdingBall)
+            {
+                SwapWeapon();
+            }
+        }
+        private void OnInteractPerformed(InputAction.CallbackContext _context)
+        {
+            if (ballInReach && !holdingBall)
+            {
+                PickUpBall();
+            }
+            else if (holdingBall)
+            {
+                ThrowBall();
+            }
+        }
+        private void OnCrouchPerformed(InputAction.CallbackContext _context)
+        {
+            //Crouch
+        }
+        private void OnSprintPerformed(InputAction.CallbackContext _context)
+        {
+            ToggleSprint();
+        }
+        #endregion
+        #region Movement
         void MouseLook(Vector2 inputVector)
         {
             //Old Input
@@ -123,7 +175,7 @@ namespace GunBall.Player
             Vector3 move = ((transform.right * x) + (transform.forward * z)) * currentSpeed;
             if(!grounded)
             {
-                move /= 2;
+                move /= 5;
             }
             charControl.Move(move * Time.deltaTime);
 
@@ -137,6 +189,23 @@ namespace GunBall.Player
             velocity.y += gravity * Time.deltaTime;
             charControl.Move(velocity * Time.deltaTime);
 
+        }
+        #endregion
+        public void PlayerSetUp(GeneralBall ball)
+        {
+            gameBall = ball;
+            cameraTransform = gameObject.GetComponentInChildren<Camera>().transform;
+            charControl = gameObject.GetComponent<CharacterController>();
+
+            Cursor.lockState = CursorLockMode.Locked;
+            currentSpeed = normalSpeed;
+
+            #region Pistol Set Up
+            currentGun = pistol;
+            equipedGunID = 0;
+            currentGun.PlayerSetUp(gameObject);
+            currentGun.UpdateUI();
+            #endregion
         }
         public void PickUpWeapon(GeneralGun gunToPickUp)
         {
@@ -197,13 +266,6 @@ namespace GunBall.Player
                 currentSpeed = sprintSpeed;
             }
         }
-        private void Awake()
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            cameraTransform = gameObject.GetComponentInChildren<Camera>().transform;
-            charControl = gameObject.GetComponent<CharacterController>();
-
-        }
         private void Start()
         {
             #region Set Up Player Inputs
@@ -243,15 +305,6 @@ namespace GunBall.Player
             crouchAction.Enable();
             crouchAction.performed += OnCrouchPerformed;
             #endregion
-
-            currentSpeed = normalSpeed;
-
-            #region Initial Gun (Pistol) Set Up
-            currentGun = pistol;
-            equipedGunID = 0;
-            currentGun.PlayerSetUp(gameObject);
-            currentGun.UpdateUI();
-            #endregion
         }
         private void Update()
         {
@@ -274,55 +327,6 @@ namespace GunBall.Player
                     }
                 }
             }
-        }
-
-        private void OnJumpPerformed(InputAction.CallbackContext _context)
-        {
-            if (groundedCheck)
-            {
-                Debug.Log("jump");
-                velocity.y += jumpSpeed;
-            }
-        }
-        private void OnFirePerformed(InputAction.CallbackContext _context)
-        {
-            if (!holdingBall)
-            {
-                currentGun.Shoot();
-            }
-        }
-        private void OnReloadPerformed(InputAction.CallbackContext _context)
-        {
-            if (!holdingBall)
-            {
-                currentGun.Reload();
-            }
-        }
-        private void OnSwapPerformed(InputAction.CallbackContext _context)
-        {
-            if (!holdingBall)
-            {
-                SwapWeapon();
-            }
-        }
-        private void OnInteractPerformed(InputAction.CallbackContext _context)
-        {
-            if(ballInReach && !holdingBall)
-            {
-                PickUpBall();
-            }
-            else if(holdingBall)
-            {
-                ThrowBall();
-            }
-        }
-        private void OnCrouchPerformed(InputAction.CallbackContext _context)
-        {
-            //Crouch
-        }
-        private void OnSprintPerformed(InputAction.CallbackContext _context)
-        {
-            ToggleSprint();
         }
     }
 }
