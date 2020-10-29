@@ -156,6 +156,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   currentGun: {fileID: 3077807068971620146}
+  pistol: {fileID: 3077807068971620146}
+  primary: {fileID: 0}
   loadout: []
   gameBall: {fileID: 0}
   ballPosition: {x: 0.5, y: -0.3, z: 0.5}

@@ -30,12 +30,14 @@ namespace GunBall.Player
         float xRotation;//used in mouse look to control the range of the camera movement
         Transform cameraTransform;//transform of the players camera
         [Header("Movement")]
-        public float speed = 2f;//players movement speed
-        public float jumpSpeed = 50f;//players jump speed/force
-        public float gravity = -10f;//the rate of gravity
-        public Vector3 velocity;//used to update the players position in movement
+        [SerializeField] float currentSpeed, normalSpeed = 5f, sprintSpeed = 15f, crouchSpeed = 2f;//players movement speeds
+        [SerializeField] float jumpSpeed = 50f;//players jump speed/force
+        [SerializeField] float gravity = -10f;//the rate of gravity
+        [SerializeField] bool isCrouching, isSprinting;
+        [SerializeField] Vector3 velocity;//used to update the players position in movement
         CharacterController charControl;//reference to the players character controller
         public LayerMask groundLayerMask;//layer mask of the ground layer
+
         bool groundedCheck => Physics.Raycast(gameObject.transform.position, Vector3.down, 1.1f, groundLayerMask);//used to check if the player is on the ground
         [Header("Input")]
         PlayerInput playerInput;
@@ -46,8 +48,20 @@ namespace GunBall.Player
         InputAction fireAction;
         InputAction swapAction;
         InputAction interactAction;
+        InputAction crouchAction;
+        InputAction sprintAction;
+        InputAction meleeAction;
         [Header("Guns")]
         [SerializeField] GeneralGun currentGun;
+        [SerializeField] GeneralGun pistol;
+        [SerializeField] GeneralGun primary = null;
+        public GeneralGun Primary
+        {
+            get
+            {
+                return primary;
+            }
+        }
         [SerializeField] List<GeneralGun> loadout = new List<GeneralGun>();
         public int LoadoutCount
         {
@@ -81,7 +95,8 @@ namespace GunBall.Player
         }
         void PlayerMovement(Vector2 inputVector)
         {
-            if (groundedCheck && velocity.y < -2)
+            bool grounded = groundedCheck;
+            if (grounded && velocity.y < 0)
             {
                 velocity.y = 0f;
             }
@@ -105,25 +120,29 @@ namespace GunBall.Player
                 }
             }
 
-            Vector3 move = (transform.right * x) + (transform.forward * z) * speed;
+            Vector3 move = ((transform.right * x) + (transform.forward * z)) * currentSpeed;
+            if(!grounded)
+            {
+                move /= 2;
+            }
             charControl.Move(move * Time.deltaTime);
+
+
+            //if (jumpAction.ReadValue<float>() == 1 && groundedCheck)
+            //{
+            //    Debug.Log("jump");
+            //    velocity.y += Mathf.Sqrt(jumpSpeed * -1 * gravity);
+            //}
 
             velocity.y += gravity * Time.deltaTime;
             charControl.Move(velocity * Time.deltaTime);
 
-
-            if (jumpAction.ReadValue<float>() == 1 && groundedCheck)
-            {
-                Debug.Log("jump");
-                velocity.y += Mathf.Sqrt(jumpSpeed * -1 * gravity);
-            }
-
         }
         public void PickUpWeapon(GeneralGun gunToPickUp)
         {
-            if (loadout.Count < 2)
+            if (primary == null)
             {
-                loadout.Add(gunToPickUp);//add the gun to the list equipedWeapons
+                primary = gunToPickUp;
                 SwapWeapon();
             }
         }
@@ -140,27 +159,43 @@ namespace GunBall.Player
         {
             holdingBall = false;
             gameBall.transform.SetParent(null);
+            currentGun.gameObject.SetActive(true);
             Rigidbody ballRigidbidy = gameBall.gameObject.AddComponent<Rigidbody>();
-            ballRigidbidy.velocity = charControl.velocity;
+            //ballRigidbidy.velocity = charControl.velocity;
             ballRigidbidy.AddForce(cameraTransform.forward * ballThrowForce, ForceMode.Impulse);
         }
         public void SwapWeapon()
         {
-            if(loadout.Count > 1 && !holdingBall)
+            if(!holdingBall && primary != null)
             {
                 currentGun.gameObject.SetActive(false);
-                if(equipedGunID == loadout.Count - 1)
+                if(equipedGunID == 0)
+                {
+                    equipedGunID = 1;
+                    currentGun = primary;
+                }
+                else if(equipedGunID == 1)
                 {
                     equipedGunID = 0;
+                    currentGun = pistol;
                 }
-                else
-                {
-                    equipedGunID++;
-                }
-                currentGun = loadout[equipedGunID];
+                //currentGun = loadout[equipedGunID];
                 currentGun.gameObject.SetActive(true);
             }
             currentGun.UpdateUI();
+        }
+        void ToggleSprint()
+        {
+            if(isSprinting)
+            {
+                isSprinting = false;
+                currentSpeed = normalSpeed;
+            }
+            else
+            {
+                isSprinting = true;
+                currentSpeed = sprintSpeed;
+            }
         }
         private void Awake()
         {
@@ -168,12 +203,6 @@ namespace GunBall.Player
             cameraTransform = gameObject.GetComponentInChildren<Camera>().transform;
             charControl = gameObject.GetComponent<CharacterController>();
 
-            #region Initial Gun (Pistol) Set Up
-            loadout.Add(currentGun);
-            equipedGunID = 0;
-            currentGun.PlayerSetUp(gameObject);
-            currentGun.UpdateUI();
-            #endregion
         }
         private void Start()
         {
@@ -188,6 +217,7 @@ namespace GunBall.Player
 
             jumpAction = playerInput.actions.FindAction("Jump");
             jumpAction.Enable();
+            jumpAction.performed += OnJumpPerformed;
 
             interactAction = playerInput.actions.FindAction("Interact");
             interactAction.Enable();
@@ -205,6 +235,22 @@ namespace GunBall.Player
             fireAction.Enable();
             fireAction.performed += OnFirePerformed;
 
+            sprintAction = playerInput.actions.FindAction("Sprint");
+            sprintAction.Enable();
+            sprintAction.performed += OnSprintPerformed;
+
+            crouchAction = playerInput.actions.FindAction("Crouch");
+            crouchAction.Enable();
+            crouchAction.performed += OnCrouchPerformed;
+            #endregion
+
+            currentSpeed = normalSpeed;
+
+            #region Initial Gun (Pistol) Set Up
+            currentGun = pistol;
+            equipedGunID = 0;
+            currentGun.PlayerSetUp(gameObject);
+            currentGun.UpdateUI();
             #endregion
         }
         private void Update()
@@ -230,6 +276,14 @@ namespace GunBall.Player
             }
         }
 
+        private void OnJumpPerformed(InputAction.CallbackContext _context)
+        {
+            if (groundedCheck)
+            {
+                Debug.Log("jump");
+                velocity.y += jumpSpeed;
+            }
+        }
         private void OnFirePerformed(InputAction.CallbackContext _context)
         {
             if (!holdingBall)
@@ -261,6 +315,14 @@ namespace GunBall.Player
             {
                 ThrowBall();
             }
+        }
+        private void OnCrouchPerformed(InputAction.CallbackContext _context)
+        {
+            //Crouch
+        }
+        private void OnSprintPerformed(InputAction.CallbackContext _context)
+        {
+            ToggleSprint();
         }
     }
 }

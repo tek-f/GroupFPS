@@ -15,7 +15,7 @@ namespace GunBall.Weapons
             if (other.CompareTag("Player"))
             {
                 PlayerController player = other.GetComponent<PlayerController>();
-                if(player.LoadoutCount < 2)
+                if(player.Primary == null)
                 {
                     Camera playerCamera = player.GetComponentInChildren<Camera>();
                     GeneralGun newGun = Instantiate(gunPrefab, playerCamera.transform).GetComponent<GeneralGun>();
