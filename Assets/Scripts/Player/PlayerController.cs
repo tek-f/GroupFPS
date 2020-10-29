@@ -12,6 +12,19 @@ namespace GunBall.Player
     public class PlayerController : MonoBehaviour
     {
         #region Variables
+        [Header("Game")]
+        [SerializeField] int teamID;
+        public int TeamID
+        {
+            get
+            {
+                return teamID;
+            }
+            set
+            {
+                teamID = value;
+            }
+        }
         [Header("Looking")]
         public float mouseSensitivity = 100f;//used to control the speed of the camera movement
         float xRotation;//used in mouse look to control the range of the camera movement
@@ -32,6 +45,7 @@ namespace GunBall.Player
         InputAction reloadAction;
         InputAction fireAction;
         InputAction swapAction;
+        InputAction interactAction;
         [Header("Guns")]
         [SerializeField] GeneralGun currentGun;
         [SerializeField] List<GeneralGun> loadout = new List<GeneralGun>();
@@ -44,14 +58,13 @@ namespace GunBall.Player
         }
         int equipedGunID;
         [Header("Ball")]
+        [SerializeField] GeneralBall gameBall;
         bool holdingBall, ballInReach;
-        Vector3 ballPosition;
-        [SerializeField] float ballPickUpDistance;
+        [SerializeField] Vector3 ballPosition;
+        [SerializeField] float ballPickUpDistance, ballThrowForce;
         [SerializeField] GameObject ballPickUpIndicatorUI;
         [Header("Animation")]
         public Animator anim;//animator component on the player
-        [Header("TESTING")]
-        public GeneralGun secondaryGun;
         #endregion
         void MouseLook(Vector2 inputVector)
         {
@@ -114,12 +127,22 @@ namespace GunBall.Player
                 SwapWeapon();
             }
         }
-        public void PickUpBall(GameObject ball)
+        void PickUpBall()
         {
             holdingBall = true;
+            ballPickUpIndicatorUI.SetActive(false);
             currentGun.gameObject.SetActive(false);
-            ball.transform.SetParent(gameObject.transform);
-            ball.transform.localPosition = ballPosition;
+            gameBall.transform.SetParent(cameraTransform);
+            gameBall.transform.localPosition = ballPosition;
+            Destroy(gameBall.GetComponent<Rigidbody>());
+        }
+        void ThrowBall()
+        {
+            holdingBall = false;
+            gameBall.transform.SetParent(null);
+            Rigidbody ballRigidbidy = gameBall.gameObject.AddComponent<Rigidbody>();
+            ballRigidbidy.velocity = charControl.velocity;
+            ballRigidbidy.AddForce(cameraTransform.forward * ballThrowForce, ForceMode.Impulse);
         }
         public void SwapWeapon()
         {
@@ -166,6 +189,10 @@ namespace GunBall.Player
             jumpAction = playerInput.actions.FindAction("Jump");
             jumpAction.Enable();
 
+            interactAction = playerInput.actions.FindAction("Interact");
+            interactAction.Enable();
+            interactAction.performed += OnInteractPerformed;
+
             swapAction = playerInput.actions.FindAction("Swap");
             swapAction.Enable();
             swapAction.performed += OnSwapPerformed;
@@ -177,39 +204,63 @@ namespace GunBall.Player
             fireAction = playerInput.actions.FindAction("Fire");
             fireAction.Enable();
             fireAction.performed += OnFirePerformed;
+
             #endregion
         }
         private void Update()
         {
             MouseLook(lookAction.ReadValue<Vector2>());
             PlayerMovement(moveAction.ReadValue<Vector2>());
-            RaycastHit raycastHit;
-            if(Physics.Raycast(cameraTransform.position, cameraTransform.forward, out raycastHit, ballPickUpDistance))
+            if (!holdingBall)
             {
-                if(raycastHit.transform.GetComponent<GeneralBall>())
+                RaycastHit raycastHit;
+                if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out raycastHit, ballPickUpDistance))
                 {
-                    ballPickUpIndicatorUI.SetActive(true);
-                    ballInReach = true;
-                }
-                else
-                {
-                    ballPickUpIndicatorUI.SetActive(false);
-                    ballInReach = false;
+                    if (raycastHit.transform.GetComponent<GeneralBall>())
+                    {
+                        ballPickUpIndicatorUI.SetActive(true);
+                        ballInReach = true;
+                    }
+                    else
+                    {
+                        ballPickUpIndicatorUI.SetActive(false);
+                        ballInReach = false;
+                    }
                 }
             }
         }
 
         private void OnFirePerformed(InputAction.CallbackContext _context)
         {
-            currentGun.Shoot();
+            if (!holdingBall)
+            {
+                currentGun.Shoot();
+            }
         }
         private void OnReloadPerformed(InputAction.CallbackContext _context)
         {
-            currentGun.Reload();
+            if (!holdingBall)
+            {
+                currentGun.Reload();
+            }
         }
         private void OnSwapPerformed(InputAction.CallbackContext _context)
         {
-            SwapWeapon();
+            if (!holdingBall)
+            {
+                SwapWeapon();
+            }
+        }
+        private void OnInteractPerformed(InputAction.CallbackContext _context)
+        {
+            if(ballInReach && !holdingBall)
+            {
+                PickUpBall();
+            }
+            else if(holdingBall)
+            {
+                ThrowBall();
+            }
         }
     }
 }
