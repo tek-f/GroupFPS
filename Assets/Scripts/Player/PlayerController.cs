@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using GunBall.Weapons;
 using GunBall.Ball;
+using GunBall.Game;
 using TMPro;
 
 namespace GunBall.Player
@@ -51,6 +52,7 @@ namespace GunBall.Player
         InputAction crouchAction;
         InputAction sprintAction;
         InputAction meleeAction;
+        InputAction testAction;
         [Header("Guns")]
         [SerializeField] GeneralGun currentGun;
         [SerializeField] GeneralGun pistol;
@@ -129,6 +131,14 @@ namespace GunBall.Player
         private void OnSprintPerformed(InputAction.CallbackContext _context)
         {
             ToggleSprint();
+        }
+        private void OnMeleePerformed(InputAction.CallbackContext _context)
+        {
+            //melee attack
+        }
+        private void OnTestPerformed(InputAction.CallbackContext _context)
+        {
+            GameManagerGeneral.gameManager.TestSpawn();
         }
         #endregion
         #region Movement
@@ -230,7 +240,10 @@ namespace GunBall.Player
             currentGun.gameObject.SetActive(false);
             gameBall.transform.SetParent(cameraTransform);
             gameBall.transform.localPosition = ballPosition;
-            Destroy(gameBall.GetComponent<Rigidbody>());
+            if(gameBall.gameObject.GetComponent<Rigidbody>())
+            {
+                Destroy(gameBall.GetComponent<Rigidbody>());
+            }
         }
         void ThrowBall()
         {
@@ -312,6 +325,14 @@ namespace GunBall.Player
             crouchAction = playerInput.actions.FindAction("Crouch");
             crouchAction.Enable();
             crouchAction.performed += OnCrouchPerformed;
+
+            meleeAction = playerInput.actions.FindAction("Melee");
+            meleeAction.Enable();
+            meleeAction.performed += OnMeleePerformed;
+
+            testAction = playerInput.actions.FindAction("Test");
+            testAction.Enable();
+            testAction.performed += OnTestPerformed;
             #endregion
         }
         private void Update()
