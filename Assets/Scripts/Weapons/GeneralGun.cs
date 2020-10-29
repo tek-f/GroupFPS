@@ -86,6 +86,10 @@ namespace GunBall.Weapons
                         Debug.Log("target hit, " + damage + " damage taken");
                         hit.transform.GetComponent<Killable>().TakeDamage(damage, player);
                     }
+                    if(hit.transform.GetComponent<Rigidbody>())
+                    {
+                        hit.transform.GetComponent<Rigidbody>().AddForce((hit.transform.position - gameObject.transform.position) * 10f, ForceMode.Impulse);
+                    }
                 }
                 currentClip--;
                 UpdateUI();
