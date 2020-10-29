@@ -212,7 +212,15 @@ namespace GunBall.Player
             if (primary == null)
             {
                 primary = gunToPickUp;
-                SwapWeapon();
+                if (!holdingBall)
+                {
+                    SwapWeapon();
+                    return;
+                }
+                else
+                {
+                    gunToPickUp.gameObject.SetActive(false);
+                }
             }
         }
         void PickUpBall()
