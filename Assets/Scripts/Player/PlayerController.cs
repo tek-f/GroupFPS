@@ -34,8 +34,9 @@ namespace GunBall.Player
         [SerializeField] float currentSpeed, normalSpeed = 5f, sprintSpeed = 15f, crouchSpeed = 2f;//players movement speeds
         [SerializeField] float jumpSpeed = 50f;//players jump speed/force
         [SerializeField] float gravity = -10f;//the rate of gravity
+        float mag;
         [SerializeField] bool isCrouching, isSprinting;
-        [SerializeField] Vector3 velocity;//used to update the players position in movement
+        [SerializeField] Vector3 velocity, move;//used to update the players position in movement
         CharacterController charControl;//reference to the players character controller
         public LayerMask groundLayerMask;//layer mask of the ground layer
 
@@ -144,9 +145,6 @@ namespace GunBall.Player
         #region Movement
         void MouseLook(Vector2 inputVector)
         {
-            //Old Input
-            //float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-            //float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
             float mouseX = inputVector.x;
             float mouseY = inputVector.y;
 
@@ -158,43 +156,40 @@ namespace GunBall.Player
         void PlayerMovement(Vector2 inputVector)
         {
             bool grounded = groundedCheck;
-            if (grounded && velocity.y < 0)
-            {
-                velocity.y = 0f;
-            }
-
-            //Old Input
-            //float x = Input.GetAxis("Horizontal");
-            //float z = Input.GetAxis("Vertical");
-
             float x = inputVector.x;
             float z = inputVector.y;
-
-            if (anim)
+            if (grounded)
             {
-                if (z != 0 || x != 0)
+                if (grounded && velocity.y < 0)
                 {
-                    anim.SetBool("moving", true);
+                    velocity.y = 0f;
                 }
-                else
+
+                if (anim)
                 {
-                    anim.SetBool("moving", false);
+                    if (z != 0 || x != 0)
+                    {
+                        anim.SetBool("moving", true);
+                    }
+                    else
+                    {
+                        anim.SetBool("moving", false);
+                    }
                 }
+
+                move = ((transform.right * x) + (transform.forward * z)) * currentSpeed;
+                mag = move.magnitude;
             }
-
-            Vector3 move = ((transform.right * x) + (transform.forward * z)) * currentSpeed;
-            if(!grounded)
+            else
             {
-                move /= 5;
+                
+                Vector3 inputDirection = ((transform.right * x) + (transform.forward * z)) /2;
+                inputDirection = Vector3.Lerp(move, inputDirection, 0.1f);
+                move += inputDirection;
+                move.Normalize();
+                move *= mag;
             }
             charControl.Move(move * Time.deltaTime);
-
-
-            //if (jumpAction.ReadValue<float>() == 1 && groundedCheck)
-            //{
-            //    Debug.Log("jump");
-            //    velocity.y += Mathf.Sqrt(jumpSpeed * -1 * gravity);
-            //}
 
             velocity.y += gravity * Time.deltaTime;
             charControl.Move(velocity * Time.deltaTime);
@@ -251,7 +246,7 @@ namespace GunBall.Player
             gameBall.transform.SetParent(null);
             currentGun.gameObject.SetActive(true);
             Rigidbody ballRigidbidy = gameBall.gameObject.AddComponent<Rigidbody>();
-            //ballRigidbidy.velocity = charControl.velocity;
+            ballRigidbidy.velocity = charControl.velocity;
             ballRigidbidy.AddForce(cameraTransform.forward * ballThrowForce, ForceMode.Impulse);
         }
         public void SwapWeapon()
