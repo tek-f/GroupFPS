@@ -7,13 +7,19 @@ namespace GunBall.Weapons
 {
     public class GrenadeLauncher : GeneralGun
     {
-        GameObject grenade;
-        float shotDelay;
+        [SerializeField] GameObject grenadePrefab;
+        [SerializeField] float shotDelay;
+        [SerializeField] float lastShotTimeStamp;
+        [SerializeField] float launchForce;
         public override void Shoot()
         {
-
-
-            base.Shoot();
+            if (Time.time - lastShotTimeStamp > shotDelay)
+            {
+                GameObject grenadeInstance = Instantiate(grenadePrefab, gameObject.transform.position, gameObject.transform.rotation);
+                grenadeInstance.transform.SetParent(null);
+                grenadeInstance.GetComponent<Rigidbody>().AddForce(gameObject.transform.forward * launchForce);
+                lastShotTimeStamp = Time.time;
+            }
         }
     }
 }
