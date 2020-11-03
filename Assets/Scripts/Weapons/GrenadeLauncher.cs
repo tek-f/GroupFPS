@@ -20,13 +20,14 @@ namespace GunBall.Weapons
                 grenadeInstance.GetComponent<Rigidbody>().AddForce(gameObject.transform.forward * launchForce);
                 lastShotTimeStamp = Time.time;
                 currentClip--;
+                UpdateUI();
             }
         }
         protected override void Awake()
         {
             damage = 10;
             range = 0;
-            maxClip = 30;
+            maxClip = 6;
             //set the guns player location
             base.Awake();
         }

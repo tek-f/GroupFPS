@@ -10,8 +10,8 @@ namespace GunBall.Weapons
     {
         #region Variables
         [Header("Set Up")]
-        [SerializeField] Camera playerCamera;//reference var for the players camera
-        [SerializeField] PlayerController player = null;
+        [SerializeField] protected Camera playerCamera;//reference var for the players camera
+        [SerializeField] protected PlayerController player = null;
         [Header("Gun Metrics")]
         Vector3 gunPlayerLocation = new Vector3(0.32f, -0.293f, 0.662f);//the location the gun is relative to the players camera when the gun is equiped by tbe player, used when the gun is picked up by the player
         public Vector3 GunPlayerLocation
