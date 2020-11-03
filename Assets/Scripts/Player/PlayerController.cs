@@ -31,11 +31,11 @@ namespace GunBall.Player
         float xRotation;//used in mouse look to control the range of the camera movement
         Transform cameraTransform;//transform of the players camera
         [Header("Movement")]
-        [SerializeField] float currentSpeed, normalSpeed = 5f, sprintSpeed = 15f, crouchSpeed = 2f;//players movement speeds
+        [SerializeField] float currentSpeed, normalSpeed = 5f, sprintSpeed = 15f, crouchSpeed = 2f, devSpeed = 50f;//players movement speeds
         [SerializeField] float jumpSpeed = 50f;//players jump speed/force
         [SerializeField] float gravity = -10f;//the rate of gravity
         float mag;
-        [SerializeField] bool isCrouching, isSprinting;
+        [SerializeField] bool isCrouching, isSprinting, devSpeedBool;
         [SerializeField] Vector3 velocity, move;//used to update the players position in movement
         CharacterController charControl;//reference to the players character controller
         public LayerMask groundLayerMask;//layer mask of the ground layer
@@ -139,7 +139,7 @@ namespace GunBall.Player
         }
         private void OnTestPerformed(InputAction.CallbackContext _context)
         {
-            GameManagerGeneral.gameManager.TestSpawn();
+            ToggleDevSpeed();
         }
         #endregion
         #region Movement
@@ -280,6 +280,19 @@ namespace GunBall.Player
             {
                 isSprinting = true;
                 currentSpeed = sprintSpeed;
+            }
+        }
+        void ToggleDevSpeed()
+        {
+            if (devSpeedBool)
+            {
+                devSpeedBool = false;
+                currentSpeed = normalSpeed;
+            }
+            else
+            {
+                devSpeedBool = true;
+                currentSpeed = devSpeed;
             }
         }
         private void Start()
