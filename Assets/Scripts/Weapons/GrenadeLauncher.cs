@@ -13,13 +13,22 @@ namespace GunBall.Weapons
         [SerializeField] float launchForce;
         public override void Shoot()
         {
-            if (Time.time - lastShotTimeStamp > shotDelay)
+            if (Time.time - lastShotTimeStamp > shotDelay && currentClip > 0)
             {
                 GameObject grenadeInstance = Instantiate(grenadePrefab, gameObject.transform.position, gameObject.transform.rotation);
                 grenadeInstance.transform.SetParent(null);
                 grenadeInstance.GetComponent<Rigidbody>().AddForce(gameObject.transform.forward * launchForce);
                 lastShotTimeStamp = Time.time;
+                currentClip--;
             }
+        }
+        protected override void Awake()
+        {
+            damage = 10;
+            range = 0;
+            maxClip = 30;
+            //set the guns player location
+            base.Awake();
         }
     }
 }

@@ -76,9 +76,9 @@ namespace GunBall.Player
         int equipedGunID;
         [Header("Ball")]
         [SerializeField] GeneralBall gameBall;
-        bool holdingBall, ballInReach;
+        bool holdingBall, ballInReach, throwingBall;
         [SerializeField] Vector3 ballPosition;
-        [SerializeField] float ballPickUpDistance, ballThrowForce;
+        [SerializeField] float ballPickUpDistance, ballThrowForceModifier, chargableThrowForce, startThrowTimeStamp, minThrowForce, maxThrowForce;
         [SerializeField] GameObject ballPickUpIndicatorUI;
         [Header("Animation")]
         public Animator anim;//animator component on the player
@@ -122,6 +122,13 @@ namespace GunBall.Player
             }
             else if (holdingBall)
             {
+                StartBallThrow();
+            }
+        }
+        private void OnInteractCancelled(InputAction.CallbackContext _context)
+        {
+            if (holdingBall && throwingBall)
+            {
                 ThrowBall();
             }
         }
@@ -142,7 +149,7 @@ namespace GunBall.Player
             ToggleDevSpeed();
         }
         #endregion
-        #region Movement
+        #region Movementw
         void MouseLook(Vector2 inputVector)
         {
             float mouseX = inputVector.x;
@@ -240,14 +247,23 @@ namespace GunBall.Player
                 Destroy(gameBall.GetComponent<Rigidbody>());
             }
         }
+        void StartBallThrow()
+        {
+            throwingBall = true;
+            currentSpeed = crouchSpeed;
+            startThrowTimeStamp = Time.time;
+            chargableThrowForce = minThrowForce;
+        }
         void ThrowBall()
         {
             holdingBall = false;
+            throwingBall = false;
+            currentSpeed = normalSpeed;
             gameBall.transform.SetParent(null);
             currentGun.gameObject.SetActive(true);
             Rigidbody ballRigidbidy = gameBall.gameObject.AddComponent<Rigidbody>();
             ballRigidbidy.velocity = charControl.velocity;
-            ballRigidbidy.AddForce(cameraTransform.forward * ballThrowForce, ForceMode.Impulse);
+            ballRigidbidy.AddForce(cameraTransform.forward * chargableThrowForce, ForceMode.Impulse);
         }
         public void SwapWeapon()
         {
@@ -313,6 +329,7 @@ namespace GunBall.Player
             interactAction = playerInput.actions.FindAction("Interact");
             interactAction.Enable();
             interactAction.performed += OnInteractPerformed;
+            interactAction.canceled += OnInteractCancelled;
 
             swapAction = playerInput.actions.FindAction("Swap");
             swapAction.Enable();
@@ -366,6 +383,11 @@ namespace GunBall.Player
                         ballInReach = false;
                     }
                 }
+            }
+            if(throwingBall)
+            {
+                chargableThrowForce += (ballThrowForceModifier * Time.deltaTime);
+                chargableThrowForce = Mathf.Clamp(chargableThrowForce, minThrowForce, maxThrowForce);
             }
         }
     }
