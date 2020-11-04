@@ -131,7 +131,7 @@ namespace GunBall.Mirror
         }
         public override void ServerChangeScene(string newSceneName)
         {
-            if (SceneManager.GetActiveScene().path == menuScene && newSceneName.StartsWith("Assets/Scenes/Scene_Map"))
+            if (SceneManager.GetActiveScene().path == menuScene && newSceneName.StartsWith("Assets/Scenes/GameScene_"))
             {
                 for (int i = roomPlayers.Count - 1; i >= 0; i--)
                 {
