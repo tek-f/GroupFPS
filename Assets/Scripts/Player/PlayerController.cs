@@ -6,15 +6,13 @@ using GunBall.Weapons;
 using GunBall.Ball;
 using GunBall.Game;
 using TMPro;
+using Mirror;
 
 namespace GunBall.Player
 {
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerController : MonoBehaviour
     {
-        #region Variables
-        [Header("Game")]
-        [SerializeField] int teamID;
         public int TeamID
         {
             get
@@ -26,6 +24,23 @@ namespace GunBall.Player
                 teamID = value;
             }
         }
+        public GeneralGun Primary
+        {
+            get
+            {
+                return primary;
+            }
+        }
+        public int LoadoutCount
+        {
+            get
+            {
+                return loadout.Count;
+            }
+        }
+        #region Variables
+        [Header("Game")]
+        [SerializeField] int teamID;
         [Header("Looking")]
         public float mouseSensitivity = 100f;//used to control the speed of the camera movement
         float xRotation;//used in mouse look to control the range of the camera movement
@@ -58,21 +73,7 @@ namespace GunBall.Player
         [SerializeField] GeneralGun currentGun;
         [SerializeField] GeneralGun pistol;
         [SerializeField] GeneralGun primary = null;
-        public GeneralGun Primary
-        {
-            get
-            {
-                return primary;
-            }
-        }
         [SerializeField] List<GeneralGun> loadout = new List<GeneralGun>();
-        public int LoadoutCount
-        {
-            get
-            {
-                return loadout.Count;
-            }
-        }
         int equipedGunID;
         [Header("Ball")]
         [SerializeField] GeneralBall gameBall;
