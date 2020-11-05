@@ -327,7 +327,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 719639380}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1248184288}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &719639380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1518,7 +1529,7 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs: []
-  minPlayers: 2
+  minPlayers: 1
   menuScene: Assets/Scenes/MultiplayerMenuScene.unity
   levelScene: Assets/Scenes/OneVsOneScene.unity
   roomPlayerPrefab: {fileID: 1429198021930068504, guid: 8dddf3f89ce3de0489df654612369c10,
@@ -2378,7 +2389,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1463912430}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 725247851}
+        m_MethodName: HostLobby
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1463912430
 MonoBehaviour:
   m_ObjectHideFlags: 0
