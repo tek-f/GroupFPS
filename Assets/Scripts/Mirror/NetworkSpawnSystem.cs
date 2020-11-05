@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using System.Linq;
+using GunBall.Player;
 
 namespace GunBall.Mirror
 {
@@ -10,18 +11,39 @@ namespace GunBall.Mirror
     {
         [SerializeField] private GameObject playerPrefab = null;
 
-        private static List<Transform> spawnPoints = new List<Transform>();
+        private static List<Transform> team1SpawnPoints = new List<Transform>();
+        private static List<Transform> team2SpawnPoints = new List<Transform>();
 
-        private int nextIndex = 0;
+        private int team1NextIndex = 0, team2NextIndex = 0;
+        int teamTracker = 1;
 
         public static void AddSpawnPoint(Transform transform)
         {
-            spawnPoints.Add(transform);
+            if(transform.GetComponent<NetworkSpawnPoint>().TeamID == 1)
+            {
+                team1SpawnPoints.Add(transform);
 
-            spawnPoints.OrderBy(x => x.GetSiblingIndex()).ToList();
+                team1SpawnPoints.OrderBy(x => x.GetSiblingIndex()).ToList();
+            }
+            else
+            {
+                team2SpawnPoints.Add(transform);
+
+                team2SpawnPoints.OrderBy(x => x.GetSiblingIndex()).ToList();
+            }
         }
 
-        public static void RemoveSpawnPoint(Transform transform) => spawnPoints.Remove(transform);
+        public static void RemoveSpawnPoint(Transform transform)
+        {
+            if(transform.GetComponent<NetworkSpawnPoint>().TeamID == 1)
+            {
+                team1SpawnPoints.Remove(transform);
+            }
+            else
+            {
+                team2SpawnPoints.Remove(transform);
+            }
+        }
 
         public override void OnStartServer() => NetworkLobbyManager.OnServerReadied += SpawnPlayer;
 
@@ -30,20 +52,47 @@ namespace GunBall.Mirror
         [Server]
         public void SpawnPlayer(NetworkConnection conn)
         {
-            Transform spawnPoint = spawnPoints.ElementAtOrDefault(nextIndex);
-
-            if (spawnPoint == null)
+            if (teamTracker == 1)
             {
-                Debug.LogError("Spawn point transform not found");
-                return;
+                Transform spawnPoint = team1SpawnPoints.ElementAtOrDefault(team1NextIndex);
+
+                if (spawnPoint == null)
+                {
+                    Debug.LogError("Spawn point transform not found");
+                    return;
+                }
+
+                GameObject playerInstance = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+                playerInstance.GetComponent<PlayerController>().TeamID = 1;
+                NetworkServer.Spawn(playerInstance, conn);
+
+                team1NextIndex++;
+                if (team1NextIndex >= team1SpawnPoints.Count)
+                {
+                    team1NextIndex = 0;
+                }
+                teamTracker = 2;
             }
-
-            GameObject playerInstance = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-            NetworkServer.Spawn(playerInstance, conn);
-            nextIndex++;
-            if (nextIndex >= spawnPoints.Count)
+            else
             {
-                nextIndex = 0;
+                Transform spawnPoint = team1SpawnPoints.ElementAtOrDefault(team1NextIndex);
+
+                if (spawnPoint == null)
+                {
+                    Debug.LogError("Spawn point transform not found");
+                    return;
+                }
+
+                GameObject playerInstance = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+                playerInstance.GetComponent<PlayerController>().TeamID = 2;
+                NetworkServer.Spawn(playerInstance, conn);
+
+                team1NextIndex++;
+                if (team1NextIndex >= team1SpawnPoints.Count)
+                {
+                    team1NextIndex = 0;
+                }
+                teamTracker = 1;
             }
         }
     }

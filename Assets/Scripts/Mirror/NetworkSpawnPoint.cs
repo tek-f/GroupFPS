@@ -6,6 +6,15 @@ namespace GunBall.Mirror
 {
     public class NetworkSpawnPoint : MonoBehaviour
     {
+        public int TeamID
+        {
+            get
+            {
+                return teamID;
+            }
+        }
+
+        [SerializeField] private int teamID;
         private void Awake()
         {
             NetworkSpawnSystem.AddSpawnPoint(transform);
