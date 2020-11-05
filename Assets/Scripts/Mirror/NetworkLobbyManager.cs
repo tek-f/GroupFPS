@@ -30,12 +30,12 @@ namespace GunBall.Mirror
 
         public override void OnStartServer()
         {
-            spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList();
+            spawnPrefabs = Resources.LoadAll<GameObject>("NetworkPrefabs").ToList();
         }
 
         public override void OnStartClient()
         {
-            var spawnablePrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs");
+            var spawnablePrefabs = Resources.LoadAll<GameObject>("NetworkPrefabs");
 
             foreach (var prefab in spawnablePrefabs)
             {
@@ -148,9 +148,8 @@ namespace GunBall.Mirror
 
         public override void OnServerSceneChanged(string sceneName)
         {
-            if (sceneName.StartsWith("Assets/Scenes/Scene_Map"))
+            if (sceneName.StartsWith("Assets/Scenes/GameScene_"))
             {
-
                 GameObject playerSpawnSystemInstance = Instantiate(playerSpawnSystem);
                 NetworkServer.Spawn(playerSpawnSystemInstance);
             }

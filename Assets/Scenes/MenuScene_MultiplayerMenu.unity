@@ -1517,10 +1517,10 @@ MonoBehaviour:
   showDebugMessages: 0
   serverTickRate: 30
   offlineScene: 
-  onlineScene: Assets/Scenes/MultiplayerMenuScene.unity
+  onlineScene: Assets/Scenes/MenuScene_MultiplayerMenu.unity
   transport: {fileID: 1113307420}
   networkAddress: localhost
-  maxConnections: 4
+  maxConnections: 8
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
@@ -1530,8 +1530,8 @@ MonoBehaviour:
   playerSpawnMethod: 0
   spawnPrefabs: []
   minPlayers: 1
-  menuScene: Assets/Scenes/MultiplayerMenuScene.unity
-  levelScene: Assets/Scenes/OneVsOneScene.unity
+  menuScene: Assets/Scenes/MenuScene_MultiplayerMenu.unity
+  levelScene: Assets/Scenes/GameScene_OneVsOne.unity
   roomPlayerPrefab: {fileID: 1429198021930068504, guid: 8dddf3f89ce3de0489df654612369c10,
     type: 3}
   gamePlayerPrefab: {fileID: 2505670639371656055, guid: 69bd8071e20582f4c9e11bec05743372,
