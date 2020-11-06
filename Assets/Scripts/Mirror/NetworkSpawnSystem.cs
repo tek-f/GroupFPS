@@ -63,7 +63,7 @@ namespace GunBall.Mirror
                 }
 
                 GameObject playerInstance = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-                playerInstance.GetComponent<PlayerController>().TeamID = 1;
+                playerInstance.GetComponent<NetworkPlayerController>().TeamID = 1;
                 NetworkServer.Spawn(playerInstance, conn);
 
                 team1NextIndex++;
@@ -84,7 +84,7 @@ namespace GunBall.Mirror
                 }
 
                 GameObject playerInstance = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-                playerInstance.GetComponent<PlayerController>().TeamID = 2;
+                playerInstance.GetComponent<NetworkPlayerController>().TeamID = 2;
                 NetworkServer.Spawn(playerInstance, conn);
 
                 team1NextIndex++;

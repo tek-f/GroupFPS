@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using GunBall.Weapons;
 using GunBall.Ball;
-using GunBall.Game;
-using TMPro;
+using Mirror;
 
-namespace GunBall.Player
+namespace GunBall.Mirror
 {
     [RequireComponent(typeof(PlayerInput))]
-    public class PlayerController : MonoBehaviour
+    [RequireComponent(typeof(NetworkTransform))]
+    public class NetworkPlayerController : NetworkBehaviour
     {
         public int TeamID
         {
@@ -56,7 +56,7 @@ namespace GunBall.Player
 
         bool groundedCheck => Physics.Raycast(gameObject.transform.position, Vector3.down, 1.1f, groundLayerMask);//used to check if the player is on the ground
         [Header("Input")]
-        PlayerInput playerInput;
+        [SerializeField] PlayerInput playerInput;
         InputAction moveAction;
         InputAction lookAction;
         InputAction jumpAction;
@@ -149,7 +149,9 @@ namespace GunBall.Player
             ToggleDevSpeed();
         }
         #endregion
-        #region Movementw
+
+        #region Movement and Looking
+        [Client]
         void MouseLook(Vector2 inputVector)
         {
             float mouseX = inputVector.x;
@@ -160,6 +162,7 @@ namespace GunBall.Player
             cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
             transform.Rotate(Vector3.up * mouseX);
         }
+        [Client]
         void PlayerMovement(Vector2 inputVector)
         {
             bool grounded = groundedCheck;
@@ -189,8 +192,8 @@ namespace GunBall.Player
             }
             else
             {
-                
-                Vector3 inputDirection = ((transform.right * x) + (transform.forward * z)) /2;
+
+                Vector3 inputDirection = ((transform.right * x) + (transform.forward * z)) / 2;
                 inputDirection = Vector3.Lerp(move, inputDirection, 0.1f);
                 move += inputDirection;
                 move.Normalize();
@@ -203,6 +206,7 @@ namespace GunBall.Player
 
         }
         #endregion
+        [Client]
         public void PlayerSetUp(GeneralBall ball)
         {
             gameBall = ball;
@@ -219,6 +223,7 @@ namespace GunBall.Player
             currentGun.UpdateUI();
             #endregion
         }
+        [Client]
         public void PickUpWeapon(GeneralGun gunToPickUp)
         {
             if (primary == null)
@@ -235,6 +240,7 @@ namespace GunBall.Player
                 }
             }
         }
+        [Client]
         void PickUpBall()
         {
             holdingBall = true;
@@ -242,11 +248,12 @@ namespace GunBall.Player
             currentGun.gameObject.SetActive(false);
             gameBall.transform.SetParent(cameraTransform);
             gameBall.transform.localPosition = ballPosition;
-            if(gameBall.gameObject.GetComponent<Rigidbody>())
+            if (gameBall.gameObject.GetComponent<Rigidbody>())
             {
                 Destroy(gameBall.GetComponent<Rigidbody>());
             }
         }
+        [Client]
         void StartBallThrow()
         {
             throwingBall = true;
@@ -254,6 +261,7 @@ namespace GunBall.Player
             startThrowTimeStamp = Time.time;
             chargableThrowForce = minThrowForce;
         }
+        [Client]
         void ThrowBall()
         {
             holdingBall = false;
@@ -265,17 +273,18 @@ namespace GunBall.Player
             ballRigidbidy.velocity = charControl.velocity;
             ballRigidbidy.AddForce(cameraTransform.forward * chargableThrowForce, ForceMode.Impulse);
         }
+        [Client]
         public void SwapWeapon()
         {
-            if(!holdingBall && primary != null)
+            if (!holdingBall && primary != null)
             {
                 currentGun.gameObject.SetActive(false);
-                if(equipedGunID == 0)
+                if (equipedGunID == 0)
                 {
                     equipedGunID = 1;
                     currentGun = primary;
                 }
-                else if(equipedGunID == 1)
+                else if (equipedGunID == 1)
                 {
                     equipedGunID = 0;
                     currentGun = pistol;
@@ -285,9 +294,10 @@ namespace GunBall.Player
             }
             currentGun.UpdateUI();
         }
+        [Client]
         void ToggleSprint()
         {
-            if(isSprinting)
+            if (isSprinting)
             {
                 isSprinting = false;
                 currentSpeed = normalSpeed;
@@ -298,6 +308,7 @@ namespace GunBall.Player
                 currentSpeed = sprintSpeed;
             }
         }
+        [Client]
         void ToggleDevSpeed()
         {
             if (devSpeedBool)
@@ -311,10 +322,71 @@ namespace GunBall.Player
                 currentSpeed = devSpeed;
             }
         }
+        //public override void OnStartAuthority()
+        //{
+        //    enabled = true;
+
+        //    #region Set Up Player Inputs
+        //    playerInput = gameObject.GetComponent<PlayerInput>();
+
+        //    moveAction = playerInput.actions.FindAction("Move");
+        //    moveAction.Enable();
+
+        //    lookAction = playerInput.actions.FindAction("Look");
+        //    lookAction.Enable();
+
+        //    jumpAction = playerInput.actions.FindAction("Jump");
+        //    jumpAction.Enable();
+        //    jumpAction.performed += OnJumpPerformed;
+
+        //    interactAction = playerInput.actions.FindAction("Interact");
+        //    interactAction.Enable();
+        //    interactAction.performed += OnInteractPerformed;
+        //    interactAction.canceled += OnInteractCancelled;
+
+        //    swapAction = playerInput.actions.FindAction("Swap");
+        //    swapAction.Enable();
+        //    swapAction.performed += OnSwapPerformed;
+
+        //    reloadAction = playerInput.actions.FindAction("Reload");
+        //    reloadAction.Enable();
+        //    reloadAction.performed += OnReloadPerformed;
+
+        //    fireAction = playerInput.actions.FindAction("Fire");
+        //    fireAction.Enable();
+        //    fireAction.performed += OnFirePerformed;
+
+        //    sprintAction = playerInput.actions.FindAction("Sprint");
+        //    sprintAction.Enable();
+        //    sprintAction.performed += OnSprintPerformed;
+
+        //    crouchAction = playerInput.actions.FindAction("Crouch");
+        //    crouchAction.Enable();
+        //    crouchAction.performed += OnCrouchPerformed;
+
+        //    meleeAction = playerInput.actions.FindAction("Melee");
+        //    meleeAction.Enable();
+        //    meleeAction.performed += OnMeleePerformed;
+
+        //    testAction = playerInput.actions.FindAction("Test");
+        //    testAction.Enable();
+        //    testAction.performed += OnTestPerformed;
+        //    #endregion
+
+        //    //TEMP
+        //    PlayerSetUp(GameObject.FindWithTag("Ball").GetComponent<GeneralBall>());
+        //}
+        [ClientCallback]
+        private void OnEnable() => playerInput.enabled = true;
+        [ClientCallback]
+        private void OnDisable() => playerInput.enabled = false;
+
+        #region Start
         private void Start()
         {
             #region Set Up Player Inputs
             playerInput = gameObject.GetComponent<PlayerInput>();
+            playerInput.enabled = true;
 
             moveAction = playerInput.actions.FindAction("Move");
             moveAction.Enable();
@@ -363,6 +435,9 @@ namespace GunBall.Player
             //TEMP
             PlayerSetUp(GameObject.FindWithTag("Ball").GetComponent<GeneralBall>());
         }
+        #endregion
+
+        [ClientCallback]
         private void Update()
         {
             MouseLook(lookAction.ReadValue<Vector2>());
@@ -384,7 +459,7 @@ namespace GunBall.Player
                     }
                 }
             }
-            if(throwingBall)
+            if (throwingBall)
             {
                 chargableThrowForce += (ballThrowForceModifier * Time.deltaTime);
                 chargableThrowForce = Mathf.Clamp(chargableThrowForce, minThrowForce, maxThrowForce);

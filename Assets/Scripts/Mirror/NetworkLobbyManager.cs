@@ -36,7 +36,7 @@ namespace GunBall.Mirror
         public override void OnStartClient()
         {
             var spawnablePrefabs = Resources.LoadAll<GameObject>("NetworkPrefabs");
-
+            print(spawnablePrefabs.Length);
             foreach (var prefab in spawnablePrefabs)
             {
                 ClientScene.RegisterPrefab(prefab);
