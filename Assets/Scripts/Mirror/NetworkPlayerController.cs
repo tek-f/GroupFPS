@@ -322,71 +322,12 @@ namespace GunBall.Mirror
                 currentSpeed = devSpeed;
             }
         }
-        //public override void OnStartAuthority()
-        //{
-        //    enabled = true;
-
-        //    #region Set Up Player Inputs
-        //    playerInput = gameObject.GetComponent<PlayerInput>();
-
-        //    moveAction = playerInput.actions.FindAction("Move");
-        //    moveAction.Enable();
-
-        //    lookAction = playerInput.actions.FindAction("Look");
-        //    lookAction.Enable();
-
-        //    jumpAction = playerInput.actions.FindAction("Jump");
-        //    jumpAction.Enable();
-        //    jumpAction.performed += OnJumpPerformed;
-
-        //    interactAction = playerInput.actions.FindAction("Interact");
-        //    interactAction.Enable();
-        //    interactAction.performed += OnInteractPerformed;
-        //    interactAction.canceled += OnInteractCancelled;
-
-        //    swapAction = playerInput.actions.FindAction("Swap");
-        //    swapAction.Enable();
-        //    swapAction.performed += OnSwapPerformed;
-
-        //    reloadAction = playerInput.actions.FindAction("Reload");
-        //    reloadAction.Enable();
-        //    reloadAction.performed += OnReloadPerformed;
-
-        //    fireAction = playerInput.actions.FindAction("Fire");
-        //    fireAction.Enable();
-        //    fireAction.performed += OnFirePerformed;
-
-        //    sprintAction = playerInput.actions.FindAction("Sprint");
-        //    sprintAction.Enable();
-        //    sprintAction.performed += OnSprintPerformed;
-
-        //    crouchAction = playerInput.actions.FindAction("Crouch");
-        //    crouchAction.Enable();
-        //    crouchAction.performed += OnCrouchPerformed;
-
-        //    meleeAction = playerInput.actions.FindAction("Melee");
-        //    meleeAction.Enable();
-        //    meleeAction.performed += OnMeleePerformed;
-
-        //    testAction = playerInput.actions.FindAction("Test");
-        //    testAction.Enable();
-        //    testAction.performed += OnTestPerformed;
-        //    #endregion
-
-        //    //TEMP
-        //    PlayerSetUp(GameObject.FindWithTag("Ball").GetComponent<GeneralBall>());
-        //}
-        [ClientCallback]
-        private void OnEnable() => playerInput.enabled = true;
-        [ClientCallback]
-        private void OnDisable() => playerInput.enabled = false;
-
-        #region Start
-        private void Start()
+        public override void OnStartAuthority()
         {
+            enabled = true;
+
             #region Set Up Player Inputs
             playerInput = gameObject.GetComponent<PlayerInput>();
-            playerInput.enabled = true;
 
             moveAction = playerInput.actions.FindAction("Move");
             moveAction.Enable();
@@ -435,6 +376,65 @@ namespace GunBall.Mirror
             //TEMP
             PlayerSetUp(GameObject.FindWithTag("Ball").GetComponent<GeneralBall>());
         }
+        [ClientCallback]
+        private void OnEnable() => playerInput.enabled = true;
+        [ClientCallback]
+        private void OnDisable() => playerInput.enabled = false;
+
+        #region Start
+        //private void Start()
+        //{
+        //    #region Set Up Player Inputs
+        //    playerInput = gameObject.GetComponent<PlayerInput>();
+        //    playerInput.enabled = true;
+
+        //    moveAction = playerInput.actions.FindAction("Move");
+        //    moveAction.Enable();
+
+        //    lookAction = playerInput.actions.FindAction("Look");
+        //    lookAction.Enable();
+
+        //    jumpAction = playerInput.actions.FindAction("Jump");
+        //    jumpAction.Enable();
+        //    jumpAction.performed += OnJumpPerformed;
+
+        //    interactAction = playerInput.actions.FindAction("Interact");
+        //    interactAction.Enable();
+        //    interactAction.performed += OnInteractPerformed;
+        //    interactAction.canceled += OnInteractCancelled;
+
+        //    swapAction = playerInput.actions.FindAction("Swap");
+        //    swapAction.Enable();
+        //    swapAction.performed += OnSwapPerformed;
+
+        //    reloadAction = playerInput.actions.FindAction("Reload");
+        //    reloadAction.Enable();
+        //    reloadAction.performed += OnReloadPerformed;
+
+        //    fireAction = playerInput.actions.FindAction("Fire");
+        //    fireAction.Enable();
+        //    fireAction.performed += OnFirePerformed;
+
+        //    sprintAction = playerInput.actions.FindAction("Sprint");
+        //    sprintAction.Enable();
+        //    sprintAction.performed += OnSprintPerformed;
+
+        //    crouchAction = playerInput.actions.FindAction("Crouch");
+        //    crouchAction.Enable();
+        //    crouchAction.performed += OnCrouchPerformed;
+
+        //    meleeAction = playerInput.actions.FindAction("Melee");
+        //    meleeAction.Enable();
+        //    meleeAction.performed += OnMeleePerformed;
+
+        //    testAction = playerInput.actions.FindAction("Test");
+        //    testAction.Enable();
+        //    testAction.performed += OnTestPerformed;
+        //    #endregion
+
+        //    //TEMP
+        //    PlayerSetUp(GameObject.FindWithTag("Ball").GetComponent<GeneralBall>());
+        //}
         #endregion
 
         [ClientCallback]

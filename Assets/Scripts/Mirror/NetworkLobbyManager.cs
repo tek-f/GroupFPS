@@ -30,6 +30,7 @@ namespace GunBall.Mirror
 
         public override void OnStartServer()
         {
+            print(Resources.LoadAll<GameObject>("NetworkPrefabs").ToList().Count);
             spawnPrefabs = Resources.LoadAll<GameObject>("NetworkPrefabs").ToList();
         }
 
@@ -137,6 +138,7 @@ namespace GunBall.Mirror
                 {
                     var conn = roomPlayers[i].connectionToClient;
                     var gamePlayersInstance = Instantiate(gamePlayerPrefab);
+
                     gamePlayersInstance.SetDisplayName(roomPlayers[i].displayName);
 
                     NetworkServer.Destroy(conn.identity.gameObject);
