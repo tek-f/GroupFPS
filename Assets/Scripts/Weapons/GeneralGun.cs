@@ -8,12 +8,10 @@ namespace GunBall.Weapons
 {
     public class GeneralGun : MonoBehaviour
     {
-        #region Variables
-        [Header("Set Up")]
-        [SerializeField] protected Camera playerCamera;//reference var for the players camera
-        [SerializeField] protected PlayerController player = null;
-        [Header("Gun Metrics")]
-        Vector3 gunPlayerLocation = new Vector3(0.32f, -0.293f, 0.662f);//the location the gun is relative to the players camera when the gun is equiped by tbe player, used when the gun is picked up by the player
+        #region Properties
+        ///<summary>
+        ///Public property for gunPlayerLocation
+        /// </summary>
         public Vector3 GunPlayerLocation
         {
             get
@@ -21,7 +19,9 @@ namespace GunBall.Weapons
                 return gunPlayerLocation;
             }
         }
-        protected float range;//the guns range
+        ///<summary>
+        ///Public property for gun range
+        /// </summary>
         public float Range
         {
             get
@@ -29,7 +29,9 @@ namespace GunBall.Weapons
                 return range;
             }
         }
-        protected int damage, maxClip, currentClip, currentAmmoPool;
+        ///<summary>
+        ///The public property for the guns damage
+        /// </summary>
         public int Damage
         {
             get
@@ -37,6 +39,9 @@ namespace GunBall.Weapons
                 return damage;
             }
         }
+        ///<summary>
+        ///The public property for the guns maxClip
+        /// </summary>
         public int MaxClip
         {
             get
@@ -44,6 +49,9 @@ namespace GunBall.Weapons
                 return maxClip;
             }
         }
+        ///<summary>
+        ///The public property for the guns currentClip
+        /// </summary>
         public int CurrentClip
         {
             get
@@ -51,6 +59,9 @@ namespace GunBall.Weapons
                 return currentClip;
             }
         }
+        ///<summary>
+        ///The public property for the guns currentAmmoPool
+        /// </summary>
         public int CurrentAmmoPool
         {
             get
@@ -58,13 +69,61 @@ namespace GunBall.Weapons
                 return currentAmmoPool;
             }
         }
+        #endregion
+        #region Variables
+        [Header("Set Up")]
+        ///<summary>
+        ///Reference to the local player camera
+        /// </summary>
+        [SerializeField] protected Camera playerCamera;
+        ///<summary>
+        ///Reference to the local player
+        /// </summary>
+        [SerializeField] protected PlayerController player = null;
+        [Header("Gun Metrics")]
+        ///<summary>
+        ///The position relative to the players local space that the gun is set to when equiped
+        /// </summary>
+        Vector3 gunPlayerLocation = new Vector3(0.32f, -0.293f, 0.662f);
+        ///<summary>
+        ///The guns range
+        /// </summary>
+        protected float range;
+        ///<summary>
+        ///The guns damage
+        /// </summary>
+        protected int damage;
+        ///<summary>
+        ///The amount of bullets the guns clip holds when full
+        /// </summary>
+        protected int maxClip;
+        ///<summary>
+        ///The current amount of bullets in the guns clip
+        /// </summary>
+        protected int currentClip;
+        ///<summary>
+        ///The current remaining total pool of ammo that the gun has
+        /// </summary>
+        protected int currentAmmoPool;
         [Header("UI")]
+        ///<summary>
+        ///The reference to the Text that displays the guns clip current and max, i.e. "currentClip / maxClip"
+        /// </summary>
         [SerializeField] protected TMP_Text clipText;
+        ///<summary>
+        ///The reference to the Text that displays the guns currentAmmoPool
+        /// </summary>
         [SerializeField] protected TMP_Text ammoPoolText;
         [Header("Animation")]
+        ///<summary>
+        ///The reference to the local players animator
+        /// </summary>
         Animator animator;
         #endregion
-
+        /// <summary>
+        /// Setup function for the player.
+        /// </summary>
+        /// <param name="_player"> The game object of the player to be set up </param>
         public void PlayerSetUp(GameObject _player)
         {
             player = _player.GetComponent<PlayerController>();
@@ -72,7 +131,9 @@ namespace GunBall.Weapons
             clipText = _player.GetComponent<PlayerReferences>().clipText;
             ammoPoolText = _player.GetComponent<PlayerReferences>().ammoPoolText;
         }
-
+        /// <summary>
+        /// Guns base shoot method
+        /// </summary>
         public virtual void Shoot()
         {
             if (currentClip > 0)
@@ -95,6 +156,9 @@ namespace GunBall.Weapons
                 UpdateUI();
             }
         }
+        /// <summary>
+        /// Guns general reload method
+        /// </summary>
         public virtual void Reload()
         {
             if(currentClip < maxClip && currentAmmoPool > 0)
@@ -112,11 +176,17 @@ namespace GunBall.Weapons
                 UpdateUI();
             }
         }
+        /// <summary>
+        /// Updates clipText and ammoPoolText according to gun ammo variables, see currentClip, maxClip and currentAmmoPool
+        /// </summary>
         public virtual void UpdateUI()
         {
             clipText.text = currentClip + " / " + maxClip;
             ammoPoolText.text = currentAmmoPool.ToString();
         }
+        /// <summary>
+        /// General gun awake. Sets up ammo variables. Overriden in scripts that inherit from General Gun
+        /// </summary>
         protected virtual void Awake()
         {
             currentClip = maxClip;

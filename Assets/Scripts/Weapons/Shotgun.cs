@@ -7,8 +7,15 @@ namespace GunBall.Weapons
 {
     public class Shotgun : GeneralGun
     {
+        /// <summary>
+        /// Used to randomise the direction of the individual raycasts when shooting
+        /// </summary>
         [SerializeField] float shotRandomiseModifier;
-
+        /// <summary>
+        /// Randomises the x and y values of the Vector3 cameraForward, 
+        /// </summary>
+        /// <param name="cameraForward"></param>
+        /// <returns></returns>
         Vector3 RandomiseRaycastDirection(Vector3 cameraForward)
         {
             Vector3 result = cameraForward;

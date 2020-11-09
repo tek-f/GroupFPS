@@ -324,7 +324,7 @@ namespace GunBall.Mirror
         }
         public override void OnStartAuthority()
         {
-            enabled = true;
+            enabled = isLocalPlayer;
 
             #region Set Up Player Inputs
             playerInput = gameObject.GetComponent<PlayerInput>();
@@ -376,9 +376,9 @@ namespace GunBall.Mirror
             //TEMP
             PlayerSetUp(GameObject.FindWithTag("Ball").GetComponent<GeneralBall>());
         }
-        [ClientCallback]
+        [Client]
         private void OnEnable() => playerInput.enabled = true;
-        [ClientCallback]
+        [Client]
         private void OnDisable() => playerInput.enabled = false;
 
         #region Start
@@ -437,7 +437,7 @@ namespace GunBall.Mirror
         //}
         #endregion
 
-        [ClientCallback]
+        [Client]
         private void Update()
         {
             MouseLook(lookAction.ReadValue<Vector2>());
