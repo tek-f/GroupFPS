@@ -43,7 +43,7 @@ namespace GunBall.Player
         [Header("Looking")]
         public float mouseSensitivity = 100f;//used to control the speed of the camera movement
         float xRotation;//used in mouse look to control the range of the camera movement
-        Transform cameraTransform;//transform of the players camera
+        [SerializeField] Transform cameraTransform;//transform of the players camera
         [Header("Movement")]
         [SerializeField] float currentSpeed, normalSpeed = 5f, sprintSpeed = 15f, crouchSpeed = 2f, devSpeed = 50f;//players movement speeds
         [SerializeField] float jumpSpeed = 50f;//players jump speed/force
@@ -51,7 +51,7 @@ namespace GunBall.Player
         float mag;
         [SerializeField] bool isCrouching, isSprinting, devSpeedBool;
         [SerializeField] Vector3 velocity, move;//used to update the players position in movement
-        CharacterController charControl;//reference to the players character controller
+        [SerializeField] CharacterController charControl;//reference to the players character controller
         public LayerMask groundLayerMask;//layer mask of the ground layer
 
         bool groundedCheck => Physics.Raycast(gameObject.transform.position, Vector3.down, 1.1f, groundLayerMask);//used to check if the player is on the ground
@@ -149,7 +149,7 @@ namespace GunBall.Player
             ToggleDevSpeed();
         }
         #endregion
-        #region Movementw
+        #region Movement
         void MouseLook(Vector2 inputVector)
         {
             float mouseX = inputVector.x;
@@ -280,7 +280,6 @@ namespace GunBall.Player
                     equipedGunID = 0;
                     currentGun = pistol;
                 }
-                //currentGun = loadout[equipedGunID];
                 currentGun.gameObject.SetActive(true);
             }
             currentGun.UpdateUI();

@@ -70,6 +70,11 @@ namespace GunBall.Game
             newPlayer.PlayerSetUp(gameBall);
             AddPlayerToTeam(newPlayer);
         }
+        void EndGame()
+        {
+            /*snap*/
+
+        }
         private void Awake()
         {
             #region Singleton Set Up

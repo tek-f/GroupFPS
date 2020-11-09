@@ -40,10 +40,11 @@ namespace GunBall.Mirror
         #region Variables
         [Header("Game")]
         [SerializeField] int teamID;
+        [SerializeField] GameObject playerCanvas;
         [Header("Looking")]
         public float mouseSensitivity = 100f;//used to control the speed of the camera movement
         float xRotation;//used in mouse look to control the range of the camera movement
-        Transform cameraTransform;//transform of the players camera
+        [SerializeField] Transform cameraTransform;//transform of the players camera
         [Header("Movement")]
         [SerializeField] float currentSpeed, normalSpeed = 5f, sprintSpeed = 15f, crouchSpeed = 2f, devSpeed = 50f;//players movement speeds
         [SerializeField] float jumpSpeed = 50f;//players jump speed/force
@@ -156,7 +157,6 @@ namespace GunBall.Mirror
         {
             float mouseX = inputVector.x;
             float mouseY = inputVector.y;
-
             xRotation -= mouseY;
             xRotation = Mathf.Clamp(xRotation, -90f, 90f);
             cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
@@ -324,7 +324,11 @@ namespace GunBall.Mirror
         }
         public override void OnStartAuthority()
         {
-            enabled = isLocalPlayer;
+            enabled = true;
+            playerCanvas.SetActive(true);
+            cameraTransform.GetComponent<Camera>().enabled = true;
+            cameraTransform.GetComponent<AudioListener>().enabled = true;
+
 
             #region Set Up Player Inputs
             playerInput = gameObject.GetComponent<PlayerInput>();

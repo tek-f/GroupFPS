@@ -43,6 +43,12 @@ namespace GunBall.Mirror
                 ClientScene.RegisterPrefab(prefab);
             }
         }
+        public override void OnClientConnect(NetworkConnection conn)
+        {
+            base.OnClientConnect(conn);
+
+            OnClientConnected?.Invoke();
+        }
 
         public override void OnClientDisconnect(NetworkConnection networkConnection)
         {
