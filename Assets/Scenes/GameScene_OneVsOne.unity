@@ -481,6 +481,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 090f2e66ff169394f95d78b767915ab4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alive: 0
+  health: 25
 --- !u!136 &486926757
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -6644,6 +6646,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0b0febe18a26824ca7f413305f94438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alive: 0
+  health: 25
 --- !u!43 &850430749
 Mesh:
   m_ObjectHideFlags: 0
@@ -10460,6 +10464,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bba7395ddbc90474eb1033842df476f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scoreLimit: 0
   gameBall: {fileID: 796163643}
   playerPrefab: {fileID: 1382769187766884894, guid: 464f2e843344d304e83d931438e03ca4,
     type: 3}

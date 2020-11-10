@@ -15,6 +15,7 @@ namespace GunBall.Game
         #endregion
 
         [Header("Game Score")]
+        [SerializeField] int scoreLimit;
         [SerializeField] public static int team1Score, team2Score;
         [SerializeField] GeneralBall gameBall;
         [SerializeField] GameObject playerPrefab;

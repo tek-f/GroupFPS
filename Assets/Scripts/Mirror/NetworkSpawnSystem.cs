@@ -87,10 +87,10 @@ namespace GunBall.Mirror
                 playerInstance.GetComponent<NetworkPlayerController>().TeamID = 2;
                 NetworkServer.Spawn(playerInstance, conn);
 
-                team1NextIndex++;
-                if (team1NextIndex >= team1SpawnPoints.Count)
+                team2NextIndex++;
+                if (team2NextIndex >= team2SpawnPoints.Count)
                 {
-                    team1NextIndex = 0;
+                    team2NextIndex = 0;
                 }
                 teamTracker = 1;
             }

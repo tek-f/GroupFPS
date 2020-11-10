@@ -46,7 +46,7 @@ namespace GunBall.Player
         [SerializeField] Transform cameraTransform;//transform of the players camera
         [Header("Movement")]
         [SerializeField] float currentSpeed, normalSpeed = 5f, sprintSpeed = 15f, crouchSpeed = 2f, devSpeed = 50f;//players movement speeds
-        [SerializeField] float jumpSpeed = 50f;//players jump speed/force
+        [SerializeField] float jumpSpeed = 10f;//players jump speed/force
         [SerializeField] float gravity = -10f;//the rate of gravity
         float mag;
         [SerializeField] bool isCrouching, isSprinting, devSpeedBool;

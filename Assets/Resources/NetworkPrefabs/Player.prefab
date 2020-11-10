@@ -163,9 +163,12 @@ GameObject:
   - component: {fileID: 7047732041692275269}
   - component: {fileID: 4311311017319704835}
   - component: {fileID: 2084801811642931663}
-  - component: {fileID: 7047732041692275319}
+  - component: {fileID: 7281895900130908926}
+  - component: {fileID: -4895949172445284527}
+  - component: {fileID: 4134049353123599826}
+  - component: {fileID: -6183909566794915346}
   m_Layer: 0
-  m_Name: OfflinePlayer
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -311,7 +314,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 1
   impact: {x: 0, y: 0, z: 0}
---- !u!114 &7047732041692275319
+--- !u!114 &7281895900130908926
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -320,10 +323,59 @@ MonoBehaviour:
   m_GameObject: {fileID: 7047732041692275274}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f69ec1993e74144ba64751c71781b00, type: 3}
+  m_Script: {fileID: 11500000, guid: 127bf9d8d0f8be84f9592be2600a9044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-4895949172445284527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7047732041692275274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0
+--- !u!114 &4134049353123599826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7047732041692275274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 0
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
+--- !u!114 &-6183909566794915346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7047732041692275274}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cc3fcdb44b3cc64dbe027570a95fe4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   teamID: 0
+  playerCanvas: {fileID: 7047732043001092621}
   mouseSensitivity: 100
   cameraTransform: {fileID: 7047732042392859788}
   currentSpeed: 0
@@ -331,29 +383,29 @@ MonoBehaviour:
   sprintSpeed: 15
   crouchSpeed: 2
   devSpeed: 50
-  jumpSpeed: 10
+  jumpSpeed: 50
   gravity: -10
   isCrouching: 0
   isSprinting: 0
   devSpeedBool: 0
   velocity: {x: 0, y: 0, z: 0}
   move: {x: 0, y: 0, z: 0}
-  charControl: {fileID: 7047732041692275273}
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  playerInput: {fileID: 7047732041692275269}
   currentGun: {fileID: 6361499999472906086}
   pistol: {fileID: 6361499999472906086}
   primary: {fileID: 0}
   loadout: []
   gameBall: {fileID: 0}
   ballPosition: {x: 0, y: 0, z: 0}
-  ballPickUpDistance: 5
-  ballThrowForceModifier: 5
+  ballPickUpDistance: 0
+  ballThrowForceModifier: 0
   chargableThrowForce: 0
   startThrowTimeStamp: 0
-  minThrowForce: 10
-  maxThrowForce: 30
+  minThrowForce: 0
+  maxThrowForce: 0
   ballPickUpIndicatorUI: {fileID: 1372069072609697496}
   anim: {fileID: 0}
 --- !u!1 &7047732041765554709
@@ -627,7 +679,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7047732042392859791}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
@@ -670,7 +722,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7047732042392859791}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!1 &7047732042623799148
 GameObject:
   m_ObjectHideFlags: 0
@@ -917,7 +969,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7047732043001092620
 RectTransform:
   m_ObjectHideFlags: 0

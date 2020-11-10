@@ -8,6 +8,5 @@ namespace GunBall.Player
     public class PlayerReferences : MonoBehaviour
     {
         public TMP_Text clipText, ammoPoolText;
-
     }
 }

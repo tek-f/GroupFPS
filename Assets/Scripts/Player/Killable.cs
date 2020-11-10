@@ -7,8 +7,8 @@ namespace GunBall.Player
 {
     public class Killable : MonoBehaviour
     {
-        protected bool alive;
-        protected int health = 25;
+        [SerializeField] protected bool alive;
+        [SerializeField] protected int health = 25;
 
         public void TakeDamage(int damage, PlayerController attackingPlayer)
         {
@@ -21,7 +21,13 @@ namespace GunBall.Player
         }
         void Death()
         {
+            //disable player controls
+
             Destroy(gameObject);
+        }
+        private void Start()
+        {
+            
         }
     }
 }

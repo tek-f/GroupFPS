@@ -322,9 +322,8 @@ namespace GunBall.Mirror
                 currentSpeed = devSpeed;
             }
         }
-        public override void OnStartAuthority()
+        public override void OnStartLocalPlayer()
         {
-            enabled = true;
             playerCanvas.SetActive(true);
             cameraTransform.GetComponent<Camera>().enabled = true;
             cameraTransform.GetComponent<AudioListener>().enabled = true;
@@ -379,6 +378,8 @@ namespace GunBall.Mirror
 
             //TEMP
             PlayerSetUp(GameObject.FindWithTag("Ball").GetComponent<GeneralBall>());
+
+            enabled = true;
         }
         [Client]
         private void OnEnable() => playerInput.enabled = true;
