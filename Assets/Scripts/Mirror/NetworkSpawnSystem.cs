@@ -10,6 +10,7 @@ namespace GunBall.Mirror
     public class NetworkSpawnSystem : NetworkBehaviour
     {
         [SerializeField] private GameObject playerPrefab = null;
+        NetworkLobbyManager networkLobbyManager;
 
         private static List<Transform> team1SpawnPoints = new List<Transform>();
         private static List<Transform> team2SpawnPoints = new List<Transform>();
