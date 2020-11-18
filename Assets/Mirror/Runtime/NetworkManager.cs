@@ -1066,6 +1066,7 @@ namespace Mirror
         #region Start Positions
 
         public static int startPositionIndex;
+        public Transform lastSpawnedPosition;
 
         /// <summary>
         /// List of transforms populted by NetworkStartPosition components found in the scene.
@@ -1335,7 +1336,7 @@ namespace Mirror
             GameObject player = startPos != null
                 ? Instantiate(playerPrefab, startPos.position, startPos.rotation)
                 : Instantiate(playerPrefab);
-
+            lastSpawnedPosition = startPos;
             NetworkServer.AddPlayerForConnection(conn, player);
         }
 

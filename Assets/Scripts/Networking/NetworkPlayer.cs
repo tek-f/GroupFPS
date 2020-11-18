@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
-
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GunBall.MirrorTutorial
 {
@@ -40,7 +41,7 @@ namespace GunBall.MirrorTutorial
         }
         public void ReadyPlayer(int _index, bool _isReady)
         {
-            if(isLocalPlayer)
+            if (isLocalPlayer)
             {
                 CmdReadyPlayer(_index, _isReady);
             }
@@ -70,7 +71,7 @@ namespace GunBall.MirrorTutorial
             {
                 lobby = FindObjectOfType<LobbyMenu>();
             }
-            if(!connectedToLobbyUI && lobby != null)
+            if (!connectedToLobbyUI && lobby != null)
             {
                 lobby.OnPlayerConnect(this);
                 connectedToLobbyUI = true;
@@ -85,6 +86,17 @@ namespace GunBall.MirrorTutorial
         [ClientRpc] public void RpcSetPlayerName(string _name) => username = _name;
 
         [Command] public void CmdStartGame() => RpcStartGame();
+
+        public List<Transform> GetTeamPositions(List<Transform> allPositions, int teamID)
+        {
+            string teamIDString = teamID.ToString();
+            return allPositions.Where(position =>
+            {
+                string tag = position.tag;
+                return tag.Contains(teamIDString);
+            }).ToList();
+        }
+
         [ClientRpc]
         public void RpcStartGame()
         {
@@ -94,12 +106,33 @@ namespace GunBall.MirrorTutorial
                 player.lobbyPlayer.SetActive(false);
                 player.gameplayerPlayer.SetActive(true);
 
-                if(player.isLocalPlayer)
+                if (player.isLocalPlayer)
                 {
                     SceneManager.UnloadSceneAsync("MenuScene_LobbyMenu");
                     SceneManager.LoadSceneAsync("GameScene_OneVsOne", LoadSceneMode.Additive);
 
+                    // Get all NetworkStartPositions in the Game
+                    List<Transform> startPositions = NetworkManager.startPositions;
+
+                    // No start positions?
+                    if (startPositions.Count == 0)
+                        //TODO : Aaron : Add an Error Dialogue here (Debug.Log)
+                        return; // Exit method
+
+                    var teamPositions = GetTeamPositions(startPositions, 0);
+
+                    // No start positions?
+                    if (teamPositions.Count == 0)
+                        //TODO : Aaron : Add an Error Dialogue here (Debug.Log)
+                        return; // Exit method
+                    var randomIndex = Random.Range(0, teamPositions.Count);
+                    var randomPosition = teamPositions[randomIndex];
+                    SpawnOffset spawnOffset = randomPosition.GetComponent<SpawnOffset>();
+                    if (spawnOffset != null)
+                        player.transform.position = spawnOffset.GetOffset();
+           
                     //enable/add fps controller and player handler here
+
                 }
             }
         }

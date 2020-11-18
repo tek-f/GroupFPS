@@ -1540,6 +1540,7 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs: []
+  lastSpawnedPosition: {fileID: 0}
   minPlayers: 1
   menuScene: Assets/Scenes/MenuScene_MultiplayerMenu.unity
   levelScene: Assets/Scenes/GameScene_OneVsOne.unity
@@ -2771,8 +2772,8 @@ MonoBehaviour:
   autoStartServerBuild: 1
   showDebugMessages: 0
   serverTickRate: 30
-  offlineScene: 
-  onlineScene: 
+  offlineScene: Assets/Scenes/MenuScene_MultiplayerMenu.unity
+  onlineScene: Assets/Scenes/GameScene_OneVsOne.unity
   transport: {fileID: 1574003577}
   networkAddress: localhost
   maxConnections: 4
@@ -2784,6 +2785,7 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs: []
+  lastSpawnedPosition: {fileID: 0}
 --- !u!4 &1574003579
 Transform:
   m_ObjectHideFlags: 0
