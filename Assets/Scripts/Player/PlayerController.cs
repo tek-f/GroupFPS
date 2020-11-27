@@ -6,11 +6,12 @@ using GunBall.Weapons;
 using GunBall.Ball;
 using GunBall.Game;
 using TMPro;
+using Mirror;
 
 namespace GunBall.Player
 {
     [RequireComponent(typeof(PlayerInput))]
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : NetworkBehaviour
     {
         public int TeamID
         {

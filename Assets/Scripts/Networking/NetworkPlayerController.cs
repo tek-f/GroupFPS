@@ -4,12 +4,11 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using GunBall.Weapons;
 using GunBall.Ball;
+using GunBall.Game;
 using Mirror;
 
 namespace GunBall.Mirror
 {
-    [RequireComponent(typeof(PlayerInput))]
-    [RequireComponent(typeof(NetworkTransform))]
     public class NetworkPlayerController : NetworkBehaviour
     {
         public int TeamID
@@ -324,13 +323,24 @@ namespace GunBall.Mirror
         }
         public override void OnStartLocalPlayer()
         {
+
+            enabled = true;
+        }
+        //private void OnEnable() => playerInput.enabled = true;
+        //private void OnDisable() => playerInput.enabled = false;
+
+        #region Start
+        private void Start()
+        {
             playerCanvas.SetActive(true);
             cameraTransform.GetComponent<Camera>().enabled = true;
             cameraTransform.GetComponent<AudioListener>().enabled = true;
 
+            PlayerSetUp(GameManagerGeneral.singleton.gameBall);
 
             #region Set Up Player Inputs
             playerInput = gameObject.GetComponent<PlayerInput>();
+            playerInput.enabled = true;
 
             moveAction = playerInput.actions.FindAction("Move");
             moveAction.Enable();
@@ -378,71 +388,8 @@ namespace GunBall.Mirror
 
             //TEMP
             PlayerSetUp(GameObject.FindWithTag("Ball").GetComponent<GeneralBall>());
-
-            enabled = true;
         }
-        [Client]
-        private void OnEnable() => playerInput.enabled = true;
-        [Client]
-        private void OnDisable() => playerInput.enabled = false;
-
-        #region Start
-        //private void Start()
-        //{
-        //    #region Set Up Player Inputs
-        //    playerInput = gameObject.GetComponent<PlayerInput>();
-        //    playerInput.enabled = true;
-
-        //    moveAction = playerInput.actions.FindAction("Move");
-        //    moveAction.Enable();
-
-        //    lookAction = playerInput.actions.FindAction("Look");
-        //    lookAction.Enable();
-
-        //    jumpAction = playerInput.actions.FindAction("Jump");
-        //    jumpAction.Enable();
-        //    jumpAction.performed += OnJumpPerformed;
-
-        //    interactAction = playerInput.actions.FindAction("Interact");
-        //    interactAction.Enable();
-        //    interactAction.performed += OnInteractPerformed;
-        //    interactAction.canceled += OnInteractCancelled;
-
-        //    swapAction = playerInput.actions.FindAction("Swap");
-        //    swapAction.Enable();
-        //    swapAction.performed += OnSwapPerformed;
-
-        //    reloadAction = playerInput.actions.FindAction("Reload");
-        //    reloadAction.Enable();
-        //    reloadAction.performed += OnReloadPerformed;
-
-        //    fireAction = playerInput.actions.FindAction("Fire");
-        //    fireAction.Enable();
-        //    fireAction.performed += OnFirePerformed;
-
-        //    sprintAction = playerInput.actions.FindAction("Sprint");
-        //    sprintAction.Enable();
-        //    sprintAction.performed += OnSprintPerformed;
-
-        //    crouchAction = playerInput.actions.FindAction("Crouch");
-        //    crouchAction.Enable();
-        //    crouchAction.performed += OnCrouchPerformed;
-
-        //    meleeAction = playerInput.actions.FindAction("Melee");
-        //    meleeAction.Enable();
-        //    meleeAction.performed += OnMeleePerformed;
-
-        //    testAction = playerInput.actions.FindAction("Test");
-        //    testAction.Enable();
-        //    testAction.performed += OnTestPerformed;
-        //    #endregion
-
-        //    //TEMP
-        //    PlayerSetUp(GameObject.FindWithTag("Ball").GetComponent<GeneralBall>());
-        //}
         #endregion
-
-        [Client]
         private void Update()
         {
             MouseLook(lookAction.ReadValue<Vector2>());

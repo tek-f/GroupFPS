@@ -11,13 +11,26 @@ namespace GunBall.Game
     public class GameManagerGeneral : MonoBehaviour
     {
         #region Singleton
-        public static GameManagerGeneral gameManager;
+        public static GameManagerGeneral singleton;
+        private void Awake()
+        {
+            #region Singleton Set Up
+            if (singleton != null && singleton != this)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                singleton = this;
+            }
+            #endregion
+        }
         #endregion
 
         [Header("Game Score")]
         [SerializeField] int scoreLimit;
         [SerializeField] public static int team1Score, team2Score;
-        [SerializeField] GeneralBall gameBall;
+        public GeneralBall gameBall;
         [SerializeField] GameObject playerPrefab;
         [SerializeField] List<PlayerController> Team1List = new List<PlayerController>();
         [SerializeField] List<PlayerController> Team2List = new List<PlayerController>();
@@ -75,19 +88,6 @@ namespace GunBall.Game
         {
             /*snap*/
 
-        }
-        private void Awake()
-        {
-            #region Singleton Set Up
-            if (gameManager != null && gameManager != this)
-            {
-                Destroy(gameObject);
-            }
-            else
-            {
-                gameManager = this;
-            }
-            #endregion
         }
         private void Start()
         {
