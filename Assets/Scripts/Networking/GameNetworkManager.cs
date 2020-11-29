@@ -1,5 +1,5 @@
 ﻿using Mirror;
-namespace GunBall.MirrorTutorial
+namespace GunBall.Mirror
 {
     public class GameNetworkManager : NetworkManager
     {

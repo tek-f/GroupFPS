@@ -4,7 +4,7 @@ using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GunBall.MirrorTutorial
+namespace GunBall.Mirror
 {
     public class NetworkPlayer : NetworkBehaviour
     {
@@ -116,23 +116,25 @@ namespace GunBall.MirrorTutorial
 
                     // No start positions?
                     if (startPositions.Count == 0)
-                        //TODO : Aaron : Add an Error Dialogue here (Debug.Log)
+                    {
+                        Debug.LogWarning("No Start Positions Found");
                         return; // Exit method
-
+                    }
                     var teamPositions = GetTeamPositions(startPositions, 0);
 
-                    // No start positions?
                     if (teamPositions.Count == 0)
-                        //TODO : Aaron : Add an Error Dialogue here (Debug.Log)
+                    {
+                        Debug.LogWarning("No Team Positions Found");
                         return; // Exit method
+                    }
                     var randomIndex = Random.Range(0, teamPositions.Count);
                     var randomPosition = teamPositions[randomIndex];
                     SpawnOffset spawnOffset = randomPosition.GetComponent<SpawnOffset>();
                     if (spawnOffset != null)
                         player.transform.position = spawnOffset.GetOffset();
-           
-                    //enable/add fps controller and player handler here
 
+                    //enable network player setup script
+                    player.gameplayerPlayer.GetComponent<NetworkPlayerControllerSetup>().enabled = true;
                 }
             }
         }

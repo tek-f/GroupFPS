@@ -9,28 +9,27 @@ namespace GunBall.Mirror
 {
     public class NetworkPlayerControllerSetup : MonoBehaviour
     {
-        NetworkPlayerController player;
+        PlayerController player;
         PlayerInput playerInput;
         NetworkTransform networkTransform;
         Camera playerCamera;
+        Canvas playerCanvas;
         private void Start()
         {
-            player = gameObject.GetComponent<NetworkPlayerController>();
+            player = gameObject.GetComponent<PlayerController>();
             playerInput = gameObject.GetComponent<PlayerInput>();
-            networkTransform = gameObject.GetComponent<NetworkTransform>();
             playerCamera = gameObject.GetComponentInChildren<Camera>();
+            playerCanvas = gameObject.GetComponentInChildren<Canvas>();
             if (NetworkServer.active)
             {
-                player.enabled = true;
-                playerInput.enabled = true;
-                networkTransform.enabled = true;
-                playerCamera.enabled = true;
-            }
-            else
-            {
-                player.enabled = true;
-                playerInput.enabled = true;
-                playerCamera.enabled = true;
+                if(GetComponentInParent<NetworkPlayer>().isLocalPlayer)
+                {
+                    player.enabled = true;
+                    playerInput.enabled = true;
+                    playerCamera.enabled = true;
+                    playerCanvas.enabled = true;
+                }
+
             }
         }
     }

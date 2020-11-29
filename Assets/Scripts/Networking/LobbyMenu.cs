@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace GunBall.MirrorTutorial
+namespace GunBall.Mirror
 {
     public class LobbyMenu : MonoBehaviour
     {

@@ -5,10 +5,11 @@ using TMPro;
 using GunBall.Weapons;
 using GunBall.Player;
 using GunBall.Ball;
+using Mirror;
 
 namespace GunBall.Game
 {
-    public class GameManagerGeneral : MonoBehaviour
+    public class GameManagerGeneral : NetworkBehaviour
     {
         #region Singleton
         public static GameManagerGeneral singleton;
@@ -29,7 +30,7 @@ namespace GunBall.Game
 
         [Header("Game Score")]
         [SerializeField] int scoreLimit;
-        [SerializeField] public static int team1Score, team2Score;
+        [SerializeField] public int team1Score, team2Score;
         public GeneralBall gameBall;
         [SerializeField] GameObject playerPrefab;
         [SerializeField] List<PlayerController> Team1List = new List<PlayerController>();
@@ -37,7 +38,7 @@ namespace GunBall.Game
         [Header("Game Score Display")]
         [SerializeField] TMP_Text team1ScoreDisplay, team2ScoreDisplay;
         [Header("Game")]
-        [SerializeField] Vector3 ballOriginPosition;
+        public Vector3 ballOriginPosition;
         void GameSetUp(int _team1NumberofPlayers, int _team2NumberofPlayers)
         {
             #region Player/Team SetUp
@@ -62,27 +63,28 @@ namespace GunBall.Game
                 player.TeamID = 1;
             }
         }
+        [Command]
+        public void CmdGoalScored(int _teamID)
+        {
+            RpcGoalScored(_teamID);
+        }
+        [ClientRpc]
+        public void RpcGoalScored(int _teamID)
+        {
+            GoalScored(_teamID);
+        }
         public void GoalScored(int team)
         {
             if(team == 1)
             {
                 team1Score++;
-                team1ScoreDisplay.text = team1Score.ToString();
             }
             else
             {
                 team2Score++;
-                team2ScoreDisplay.text = team2Score.ToString();
             }
             Destroy(gameBall.GetComponent<Rigidbody>());
             gameBall.transform.position = ballOriginPosition;
-        }
-        //TEMP
-        public void TestSpawn()
-        {
-            PlayerController newPlayer = Instantiate(playerPrefab).GetComponent<PlayerController>();
-            newPlayer.PlayerSetUp(gameBall);
-            AddPlayerToTeam(newPlayer);
         }
         void EndGame()
         {

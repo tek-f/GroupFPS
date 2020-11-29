@@ -11,7 +11,7 @@ using Mirror;
 namespace GunBall.Player
 {
     [RequireComponent(typeof(PlayerInput))]
-    public class PlayerController : NetworkBehaviour
+    public class PlayerController : MonoBehaviour
     {
         public int TeamID
         {
@@ -81,6 +81,8 @@ namespace GunBall.Player
         [SerializeField] Vector3 ballPosition;
         [SerializeField] float ballPickUpDistance, ballThrowForceModifier, chargableThrowForce, startThrowTimeStamp, minThrowForce, maxThrowForce;
         [SerializeField] GameObject ballPickUpIndicatorUI;
+        [Header("Ball")]
+        public TMP_Text team1ScoreText, team2ScoreText;
         [Header("Animation")]
         public Animator anim;//animator component on the player
         #endregion
@@ -219,6 +221,21 @@ namespace GunBall.Player
             currentGun.PlayerSetUp(gameObject);
             currentGun.UpdateUI();
             #endregion
+        }
+        [Command]
+        public void CmdUpdateTeamScores(int _team1Score, int _team2Score)
+        {
+            RpcUpdateTeamScores(_team1Score, _team2Score);
+        }
+        [ClientRpc]
+        public void RpcUpdateTeamScores(int _team1Score, int _team2Score)
+        {
+            UpdateTeamScores(_team1Score, _team2Score);
+        }
+        public void UpdateTeamScores(int _team1Score, int _team2Score)
+        {
+            team1ScoreText.text = _team1Score.ToString();
+            team2ScoreText.text = _team2Score.ToString();
         }
         public void PickUpWeapon(GeneralGun gunToPickUp)
         {
