@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
 
 namespace GunBall.Mirror
 {
@@ -37,7 +38,6 @@ namespace GunBall.Mirror
         public override void OnStartLocalPlayer()
         {
             SceneManager.LoadSceneAsync("MenuScene_LobbyMenu", LoadSceneMode.Additive);
-            base.OnStartLocalPlayer();
         }
         public void ReadyPlayer(int _index, bool _isReady)
         {
@@ -137,6 +137,14 @@ namespace GunBall.Mirror
                     player.gameplayerPlayer.GetComponent<NetworkPlayerControllerSetup>().enabled = true;
                 }
             }
+        }
+
+        private IEnumerator LoadGameScene()
+        {
+            yield return SceneManager.LoadSceneAsync("GameScene_OneVsOne", LoadSceneMode.Additive);
+
+            Scene scene = SceneManager.GetSceneByName("GameScene_OneVsOne");
+            SceneManager.SetActiveScene(scene);
         }
     }
 }

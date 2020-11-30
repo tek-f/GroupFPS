@@ -258,7 +258,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000061035156, y: 495.89993}
+  m_AnchoredPosition: {x: 0, y: 495.89996}
   m_SizeDelta: {x: -1573.3, y: -991.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5432298483603594212
@@ -518,6 +518,8 @@ MonoBehaviour:
   minThrowForce: 10
   maxThrowForce: 30
   ballPickUpIndicatorUI: {fileID: 1937860443447498976}
+  team1ScoreText: {fileID: 1165638853902484419}
+  team2ScoreText: {fileID: 1372291152981966215}
   anim: {fileID: 0}
 --- !u!1 &1937860443447498976
 GameObject:
@@ -758,6 +760,7 @@ GameObject:
   - component: {fileID: 7047732041692275270}
   - component: {fileID: 7335469078434581000}
   - component: {fileID: 5263190267520091248}
+  - component: {fileID: 3092104049552881293}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -814,6 +817,25 @@ MonoBehaviour:
   username: Player
   lobbyPlayer: {fileID: 9055663295406305553}
   gameplayerPlayer: {fileID: 1879201082336730004}
+--- !u!114 &3092104049552881293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7047732041692275274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 0
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
+  target: {fileID: 1526615044355289760}
 --- !u!1 &7307036136531316341
 GameObject:
   m_ObjectHideFlags: 0

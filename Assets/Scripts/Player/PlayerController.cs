@@ -222,16 +222,16 @@ namespace GunBall.Player
             currentGun.UpdateUI();
             #endregion
         }
-        [Command]
-        public void CmdUpdateTeamScores(int _team1Score, int _team2Score)
-        {
-            RpcUpdateTeamScores(_team1Score, _team2Score);
-        }
-        [ClientRpc]
-        public void RpcUpdateTeamScores(int _team1Score, int _team2Score)
-        {
-            UpdateTeamScores(_team1Score, _team2Score);
-        }
+        //[Command]
+        //public void CmdUpdateTeamScores(int _team1Score, int _team2Score)
+        //{
+        //    RpcUpdateTeamScores(_team1Score, _team2Score);
+        //}
+        //[ClientRpc]
+        //public void RpcUpdateTeamScores(int _team1Score, int _team2Score)
+        //{
+        //    UpdateTeamScores(_team1Score, _team2Score);
+        //}
         public void UpdateTeamScores(int _team1Score, int _team2Score)
         {
             team1ScoreText.text = _team1Score.ToString();
