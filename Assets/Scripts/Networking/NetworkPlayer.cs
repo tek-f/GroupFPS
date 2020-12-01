@@ -4,6 +4,7 @@ using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
+using GunBall.Player;
 
 namespace GunBall.Mirror
 {
@@ -32,6 +33,8 @@ namespace GunBall.Mirror
         /// Reference to a LobbyMenu script.
         /// </summary>
         LobbyMenu lobby;
+
+        public int teamID;
         /// <summary>
         /// Runs when the local player calls Start().
         /// </summary>
@@ -75,7 +78,6 @@ namespace GunBall.Mirror
             {
                 lobby.OnPlayerConnect(this);
                 connectedToLobbyUI = true;
-
             }
         }
 
@@ -89,7 +91,8 @@ namespace GunBall.Mirror
 
         public List<Transform> GetTeamPositions(List<Transform> allPositions, int teamID)
         {
-            string teamIDString = teamID.ToString();
+            string teamIDString = "Team " + teamID.ToString();
+
             return allPositions.Where(position =>
             {
                 string tag = position.tag;
@@ -101,26 +104,38 @@ namespace GunBall.Mirror
         public void RpcStartGame()
         {
             NetworkPlayer[] players = FindObjectsOfType<NetworkPlayer>();
+            int teamTracker = 0;
             foreach (NetworkPlayer player in players)
             {
                 player.lobbyPlayer.SetActive(false);
                 player.gameplayerPlayer.SetActive(true);
+                PlayerController playerController = player.gameplayerPlayer.GetComponent<PlayerController>();
+                playerController.TeamID = teamTracker;
+
+                if(teamTracker == 0)
+                {
+                    teamTracker = 1;
+                }
+                else
+                {
+                    teamTracker = 0;
+                }
 
                 if (player.isLocalPlayer)
                 {
                     SceneManager.UnloadSceneAsync("MenuScene_LobbyMenu");
-                    SceneManager.LoadSceneAsync("GameScene_OneVsOne", LoadSceneMode.Additive);
+
 
                     // Get all NetworkStartPositions in the Game
                     List<Transform> startPositions = NetworkManager.startPositions;
 
-                    // No start positions?
+                    //No start positions ?
                     if (startPositions.Count == 0)
                     {
                         Debug.LogWarning("No Start Positions Found");
                         return; // Exit method
                     }
-                    var teamPositions = GetTeamPositions(startPositions, 0);
+                    var teamPositions = GetTeamPositions(startPositions, playerController.TeamID);
 
                     if (teamPositions.Count == 0)
                     {
@@ -131,20 +146,12 @@ namespace GunBall.Mirror
                     var randomPosition = teamPositions[randomIndex];
                     SpawnOffset spawnOffset = randomPosition.GetComponent<SpawnOffset>();
                     if (spawnOffset != null)
-                        player.transform.position = spawnOffset.GetOffset();
+                        player.gameplayerPlayer.transform.position = spawnOffset.GetOffset();
 
                     //enable network player setup script
                     player.gameplayerPlayer.GetComponent<NetworkPlayerControllerSetup>().enabled = true;
                 }
             }
-        }
-
-        private IEnumerator LoadGameScene()
-        {
-            yield return SceneManager.LoadSceneAsync("GameScene_OneVsOne", LoadSceneMode.Additive);
-
-            Scene scene = SceneManager.GetSceneByName("GameScene_OneVsOne");
-            SceneManager.SetActiveScene(scene);
         }
     }
 }

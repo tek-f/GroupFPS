@@ -1,28 +1,37 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 using GunBall.Game;
 
 namespace GunBall.Ball
 {
-    public class GeneralBall : MonoBehaviour
+    public class GeneralBall : NetworkBehaviour
     {
-        public static GeneralBall singleton;
-        private void Awake()
+        public GeneralBall singleton;
+
+        public Vector3 startPosition;
+
+        public void ResetPosition()
         {
-            if(singleton == null)
-            {
-                singleton = this;
-                return;
-            }
-            else if(singleton != this)
-            {
-                Destroy(gameObject);
-            }
+            transform.position = startPosition;
+        }
+
+        [ClientRpc]
+        public void RpcResetPosition()
+        {
+            ResetPosition();
+        }
+
+        [Command]
+        public void CmdResetPosition()
+        {
+            RpcResetPosition();
         }
         private void Start()
         {
             GameManagerGeneral.singleton.ballOriginPosition = transform.position;
+            startPosition = transform.position;
         }
     }
 }

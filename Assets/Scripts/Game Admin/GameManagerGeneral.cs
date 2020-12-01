@@ -84,16 +84,11 @@ namespace GunBall.Game
                 team2Score++;
             }
             Destroy(gameBall.GetComponent<Rigidbody>());
-            gameBall.transform.position = ballOriginPosition;
-        }
-        void EndGame()
-        {
-            /*snap*/
-
+            gameBall.CmdResetPosition();
         }
         private void Start()
         {
-            GameSetUp(1, 0);
+            //GameSetUp(1, 0);
         }
     }
 }

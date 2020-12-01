@@ -379,6 +379,9 @@ namespace GunBall.Player
 
             //TEMP
             PlayerSetUp(GameObject.FindWithTag("Ball").GetComponent<GeneralBall>());
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
         private void Update()
         {

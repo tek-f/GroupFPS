@@ -60,13 +60,11 @@ namespace GunBall.Mirror
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+
         public void OnClickStart() => localPlayer.StartGame();
         public void SetReadyPlayer(int _index, bool _isReady) => playerDisplays[_index].SetReadyState(_isReady);
 
-        void OnEndEditName(string _name)
+        public void OnEndEditName(string _name)
         {
             if(localPlayer != null)
             {

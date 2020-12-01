@@ -20,16 +20,13 @@ namespace GunBall.Mirror
             playerInput = gameObject.GetComponent<PlayerInput>();
             playerCamera = gameObject.GetComponentInChildren<Camera>();
             playerCanvas = gameObject.GetComponentInChildren<Canvas>();
-            if (NetworkServer.active)
-            {
-                if(GetComponentInParent<NetworkPlayer>().isLocalPlayer)
-                {
-                    player.enabled = true;
-                    playerInput.enabled = true;
-                    playerCamera.enabled = true;
-                    playerCanvas.enabled = true;
-                }
 
+            if(GetComponentInParent<NetworkPlayer>().isLocalPlayer)
+            {
+                player.enabled = true;
+                playerInput.enabled = true;
+                playerCamera.enabled = true;
+                playerCanvas.enabled = true;
             }
         }
     }
