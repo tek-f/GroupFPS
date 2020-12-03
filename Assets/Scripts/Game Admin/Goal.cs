@@ -13,7 +13,6 @@ namespace GunBall.Game
             if(other.CompareTag("Ball"))
             {
                 GameManagerGeneral.singleton.CmdGoalScored(teamID);
-
             }
         }
     }

@@ -13,6 +13,7 @@ namespace GunBall.Player
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerController : MonoBehaviour
     {
+        #region Properties
         public int TeamID
         {
             get
@@ -38,6 +39,7 @@ namespace GunBall.Player
                 return loadout.Count;
             }
         }
+        #endregion
         #region Variables
         [Header("Game")]
         [SerializeField] int teamID;
@@ -62,7 +64,7 @@ namespace GunBall.Player
         InputAction lookAction;
         InputAction jumpAction;
         InputAction reloadAction;
-        InputAction fireAction;
+        //InputAction fireAction;
         InputAction swapAction;
         InputAction interactAction;
         InputAction crouchAction;
@@ -70,14 +72,15 @@ namespace GunBall.Player
         InputAction meleeAction;
         InputAction testAction;
         [Header("Guns")]
-        [SerializeField] GeneralGun currentGun;
+        [SerializeField] public GeneralGun currentGun;
         [SerializeField] GeneralGun pistol;
         [SerializeField] GeneralGun primary = null;
         [SerializeField] List<GeneralGun> loadout = new List<GeneralGun>();
         int equipedGunID;
         [Header("Ball")]
+        [SerializeField] GameObject playerBall;
         [SerializeField] GeneralBall gameBall;
-        bool holdingBall, ballInReach, throwingBall;
+        public bool holdingBall, ballInReach, throwingBall;
         [SerializeField] Vector3 ballPosition;
         [SerializeField] float ballPickUpDistance, ballThrowForceModifier, chargableThrowForce, startThrowTimeStamp, minThrowForce, maxThrowForce;
         [SerializeField] GameObject ballPickUpIndicatorUI;
@@ -96,13 +99,13 @@ namespace GunBall.Player
                 velocity.y += jumpSpeed;
             }
         }
-        private void OnFirePerformed(InputAction.CallbackContext _context)
-        {
-            if (!holdingBall)
-            {
-                currentGun.Shoot();
-            }
-        }
+        //private void OnFirePerformed(InputAction.CallbackContext _context)
+        //{
+        //    if (!holdingBall)
+        //    {
+
+        //    }
+        //}
         private void OnReloadPerformed(InputAction.CallbackContext _context)
         {
             if (!holdingBall)
@@ -258,12 +261,10 @@ namespace GunBall.Player
             holdingBall = true;
             ballPickUpIndicatorUI.SetActive(false);
             currentGun.gameObject.SetActive(false);
-            gameBall.transform.SetParent(cameraTransform);
+            //layerBall.SetActive(true);
+            gameBall.transform.SetParent(gameObject.transform);
             gameBall.transform.localPosition = ballPosition;
-            if(gameBall.gameObject.GetComponent<Rigidbody>())
-            {
-                Destroy(gameBall.GetComponent<Rigidbody>());
-            }
+            Destroy(gameBall.GetComponent<Rigidbody>());
         }
         void StartBallThrow()
         {
@@ -277,11 +278,17 @@ namespace GunBall.Player
             holdingBall = false;
             throwingBall = false;
             currentSpeed = normalSpeed;
-            gameBall.transform.SetParent(null);
+            //playerBall.SetActive(false);
             currentGun.gameObject.SetActive(true);
-            Rigidbody ballRigidbidy = gameBall.gameObject.AddComponent<Rigidbody>();
-            ballRigidbidy.velocity = charControl.velocity;
-            ballRigidbidy.AddForce(cameraTransform.forward * chargableThrowForce, ForceMode.Impulse);
+            gameBall.transform.SetParent(null);
+            Rigidbody ballRigidbody = null;
+            if (!gameBall.GetComponent<Rigidbody>())
+            {
+                gameBall.gameObject.AddComponent<Rigidbody>();                
+            }
+            ballRigidbody = gameBall.GetComponent<Rigidbody>();
+            ballRigidbody.velocity = charControl.velocity;
+            ballRigidbody.AddForce(cameraTransform.forward * chargableThrowForce, ForceMode.Impulse);
         }
         public void SwapWeapon()
         {
@@ -328,6 +335,10 @@ namespace GunBall.Player
                 currentSpeed = devSpeed;
             }
         }
+        private void Awake()
+        {
+            GameManagerGeneral.singleton.AddPlayerToList(this);
+        }
         private void Start()
         {
             #region Set Up Player Inputs
@@ -356,9 +367,9 @@ namespace GunBall.Player
             reloadAction.Enable();
             reloadAction.performed += OnReloadPerformed;
 
-            fireAction = playerInput.actions.FindAction("Fire");
-            fireAction.Enable();
-            fireAction.performed += OnFirePerformed;
+            //fireAction = playerInput.actions.FindAction("Fire");
+            //fireAction.Enable();
+            //fireAction.performed += OnFirePerformed;
 
             sprintAction = playerInput.actions.FindAction("Sprint");
             sprintAction.Enable();
@@ -378,7 +389,7 @@ namespace GunBall.Player
             #endregion
 
             //TEMP
-            PlayerSetUp(GameObject.FindWithTag("Ball").GetComponent<GeneralBall>());
+            PlayerSetUp(GameManagerGeneral.singleton.gameBall);
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;

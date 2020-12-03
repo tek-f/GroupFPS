@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace GunBall.Mirror
 {
     public class NetworkPlayer : NetworkBehaviour
     {
+        PlayerInput playerInput;
+        InputAction fireAction;
         /// <summary>
         /// String that is the username of the player. Is a SyncVar.
         /// </summary>
@@ -150,8 +153,31 @@ namespace GunBall.Mirror
 
                     //enable network player setup script
                     player.gameplayerPlayer.GetComponent<NetworkPlayerControllerSetup>().enabled = true;
+
+                    playerInput = gameplayerPlayer.GetComponent<PlayerInput>();
+
+                    fireAction = playerInput.actions.FindAction("Fire");
+                    fireAction.Enable();
+                    fireAction.performed += OnFirePerformed;
                 }
             }
+        }
+        private void OnFirePerformed(InputAction.CallbackContext _context)
+        {
+            if (!gameplayerPlayer.GetComponent<PlayerController>().holdingBall)
+            {
+                CmdShootCurrentGun();
+            }
+        }
+        [ClientRpc]
+        void RpcShootCurrentGun()
+        {
+            gameplayerPlayer.GetComponent<PlayerController>().currentGun.Shoot();
+        }
+        [Command]
+        public void CmdShootCurrentGun()
+        {
+            RpcShootCurrentGun();
         }
     }
 }

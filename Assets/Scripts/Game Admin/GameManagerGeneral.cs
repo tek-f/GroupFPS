@@ -5,6 +5,7 @@ using TMPro;
 using GunBall.Weapons;
 using GunBall.Player;
 using GunBall.Ball;
+using GunBall.Mirror;
 using Mirror;
 
 namespace GunBall.Game
@@ -13,33 +14,19 @@ namespace GunBall.Game
     {
         #region Singleton
         public static GameManagerGeneral singleton;
-        private void Awake()
-        {
-            #region Singleton Set Up
-            if (singleton != null && singleton != this)
-            {
-                Destroy(gameObject);
-            }
-            else
-            {
-                singleton = this;
-            }
-            #endregion
-        }
         #endregion
 
         [Header("Game Score")]
         [SerializeField] int scoreLimit;
         [SerializeField] public int team1Score, team2Score;
         public GeneralBall gameBall;
-        [SerializeField] GameObject playerPrefab;
-        [SerializeField] List<PlayerController> Team1List = new List<PlayerController>();
-        [SerializeField] List<PlayerController> Team2List = new List<PlayerController>();
+        [SerializeField] GameObject playerPrefab, ballPrefab;
+        [SerializeField] List<PlayerController> playerList = new List<PlayerController>();
         [Header("Game Score Display")]
         [SerializeField] TMP_Text team1ScoreDisplay, team2ScoreDisplay;
         [Header("Game")]
         public Vector3 ballOriginPosition;
-        void GameSetUp(int _team1NumberofPlayers, int _team2NumberofPlayers)
+        void GameSetUp()
         {
             #region Player/Team SetUp
             //Add each player to the correct team list
@@ -49,20 +36,22 @@ namespace GunBall.Game
             //PlayerController newPlayer = Instantiate(playerPrefab).GetComponent<PlayerController>();
             //newPlayer.PlayerSetUp(gameBall);
             //AddPlayerToTeam(newPlayer);
+
+            Debug.Log(GameNetworkManager.instance.IsHost);
+
+            if (GameNetworkManager.instance.IsHost)
+            {
+                Debug.Log("spawn game ball");
+                ClientScene.RegisterPrefab(ballPrefab);
+                GameObject ball = Instantiate(ballPrefab);
+                NetworkServer.Spawn(ball);
+            }
         }
-        public void AddPlayerToTeam(PlayerController player)
+        public void AddPlayerToList(PlayerController _player)
         {
-            if(Team1List.Count > Team2List.Count)
-            {
-                Team2List.Add(player);
-                player.TeamID = 2;
-            }
-            else
-            {
-                Team1List.Add(player);
-                player.TeamID = 1;
-            }
+            playerList.Add(_player);
         }
+
         [Command]
         public void CmdGoalScored(int _teamID)
         {
@@ -78,17 +67,30 @@ namespace GunBall.Game
             if(team == 1)
             {
                 team1Score++;
+                //team1ScoreDisplay.text = team1Score.ToString();
             }
             else
             {
                 team2Score++;
+                //team2ScoreDisplay.text = team2Score.ToString();
             }
-            Destroy(gameBall.GetComponent<Rigidbody>());
-            gameBall.CmdResetPosition();
+            //Destroy(gameBall.GetComponent<Rigidbody>());
+            //gameBall.CmdResetPosition();
         }
-        private void Start()
+        private void Awake()
         {
-            //GameSetUp(1, 0);
+            #region Singleton Set Up
+            if (singleton != null && singleton != this)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                singleton = this;
+            }
+            #endregion
+
+            //GameSetUp();
         }
     }
 }
