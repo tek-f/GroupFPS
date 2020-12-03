@@ -13,6 +13,7 @@ namespace GunBall.Mirror
     {
         PlayerInput playerInput;
         InputAction fireAction;
+        public int health = 20;
         /// <summary>
         /// String that is the username of the player. Is a SyncVar.
         /// </summary>
@@ -38,6 +39,8 @@ namespace GunBall.Mirror
         LobbyMenu lobby;
 
         public int teamID;
+
+        public Vector3 respawnPosition;
         /// <summary>
         /// Runs when the local player calls Start().
         /// </summary>
@@ -103,6 +106,15 @@ namespace GunBall.Mirror
             }).ToList();
         }
 
+        void TakeDamage(int _damage)
+        {
+            health -= _damage;
+            if(health <= 0)
+            {
+
+            }
+        }
+
         [ClientRpc]
         public void RpcStartGame()
         {
@@ -166,18 +178,8 @@ namespace GunBall.Mirror
         {
             if (!gameplayerPlayer.GetComponent<PlayerController>().holdingBall)
             {
-                CmdShootCurrentGun();
+                gameplayerPlayer.GetComponent<PlayerController>().currentGun.Shoot();
             }
-        }
-        [ClientRpc]
-        void RpcShootCurrentGun()
-        {
-            gameplayerPlayer.GetComponent<PlayerController>().currentGun.Shoot();
-        }
-        [Command]
-        public void CmdShootCurrentGun()
-        {
-            RpcShootCurrentGun();
         }
     }
 }

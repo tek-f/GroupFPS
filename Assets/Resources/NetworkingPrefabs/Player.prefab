@@ -320,7 +320,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1526615044355289760
 Transform:
   m_ObjectHideFlags: 0
@@ -511,6 +511,9 @@ MonoBehaviour:
   loadout: []
   playerBall: {fileID: 6250890038754085556}
   gameBall: {fileID: 0}
+  holdingBall: 0
+  ballInReach: 0
+  throwingBall: 0
   ballPosition: {x: 0.4, y: -0.2, z: 0.5}
   ballPickUpDistance: 5
   ballThrowForceModifier: 5
@@ -910,10 +913,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  health: 20
   username: Player
   lobbyPlayer: {fileID: 9055663295406305553}
   gameplayerPlayer: {fileID: 1879201082336730004}
   teamID: 0
+  respawnPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &7329797213360287975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2004,10 +2009,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fee4b8d6fe37614c8b86a6d3836c6eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCamera: {fileID: 0}
-  player: {fileID: 0}
-  clipText: {fileID: 0}
-  ammoPoolText: {fileID: 0}
+  playerCamera: {fileID: 7503184655063823029}
+  player: {fileID: 8539661455785585637}
+  clipText: {fileID: 7503184654746799146}
+  ammoPoolText: {fileID: 7503184655369210195}
 --- !u!114 &7503184656131432230
 MonoBehaviour:
   m_ObjectHideFlags: 0

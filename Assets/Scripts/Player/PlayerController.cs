@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using GunBall.Weapons;
 using GunBall.Ball;
 using GunBall.Game;
+using GunBall.Mirror;
 using TMPro;
 using Mirror;
 
@@ -221,7 +222,7 @@ namespace GunBall.Player
             #region Pistol Set Up
             currentGun = pistol;
             equipedGunID = 0;
-            currentGun.PlayerSetUp(gameObject);
+            //currentGun.PlayerSetUp(gameObject);
             currentGun.UpdateUI();
             #endregion
         }
@@ -393,6 +394,8 @@ namespace GunBall.Player
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+
+            GetComponentInParent<GunBall.Mirror.NetworkPlayer>().respawnPosition = transform.position;
         }
         private void Update()
         {

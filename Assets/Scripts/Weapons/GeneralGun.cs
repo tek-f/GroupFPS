@@ -92,7 +92,7 @@ namespace GunBall.Weapons
         ///<summary>
         ///The guns damage
         /// </summary>
-        protected int damage;
+        protected int damage = 5;
         ///<summary>
         ///The amount of bullets the guns clip holds when full
         /// </summary>
@@ -138,11 +138,13 @@ namespace GunBall.Weapons
         {
             if (currentClip > 0)
             {
+                currentClip--;
+                UpdateUI();
                 RaycastHit hit;
                 if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, range))
                 {
                     Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward, Color.red, range);
-                    if (hit.transform.GetComponent<Killable>())
+                    if (hit.transform.GetComponent<PlayerController>())
                     {
                         Debug.Log("target hit, " + damage + " damage taken");
                         hit.transform.GetComponent<Killable>().TakeDamage(damage, player);
@@ -152,8 +154,6 @@ namespace GunBall.Weapons
                         hit.transform.GetComponent<Rigidbody>().AddForce((hit.transform.position - gameObject.transform.position) * 10f, ForceMode.Impulse);
                     }
                 }
-                currentClip--;
-                UpdateUI();
             }
         }
         /// <summary>
