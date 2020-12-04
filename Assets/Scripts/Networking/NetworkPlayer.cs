@@ -11,9 +11,13 @@ namespace GunBall.Mirror
 {
     public class NetworkPlayer : NetworkBehaviour
     {
-        PlayerInput playerInput;
-        InputAction fireAction;
+        //PlayerInput playerInput;
+        //InputAction fireAction;
+        public GameObject deathPanel;
         public int health = 20;
+        public Vector3 respwanPosition;
+        PlayerController playerControler;
+        PlayerInput playerInput;
         /// <summary>
         /// String that is the username of the player. Is a SyncVar.
         /// </summary>
@@ -106,12 +110,64 @@ namespace GunBall.Mirror
             }).ToList();
         }
 
-        void TakeDamage(int _damage)
+        public void TakeDamage(int _damage)
         {
-            health -= _damage;
-            if(health <= 0)
+            if (isLocalPlayer)
+            { 
+                health -= _damage;
+                print(health);
+                if (health <= 0)
+                {
+                    Death();
+                }
+            }
+        }
+        [ClientRpc]
+        public void RpcTakeDamage(int _damage)
+        {
+            TakeDamage(_damage);
+        }
+        [Command]
+        public void CmdTakeDamage(int _damage)
+        {
+            RpcTakeDamage(_damage);
+        }
+        public void PublicTakeDamage(int _damage)
+        {
+            if (isLocalPlayer)
             {
-
+                CmdTakeDamage(_damage);
+            }
+        }
+        void Death()
+        {
+            Debug.Log("death");
+            gameplayerPlayer.transform.position = respawnPosition;
+            health = 20;
+            playerControler.enabled = false;
+            playerInput.enabled = false;
+            deathPanel.SetActive(true);
+            Invoke("Respawn", 8);
+        }
+        [ClientRpc]
+        void RpcDeath()
+        {
+            Debug.Log("RPC death");
+            Death();
+        }
+        [Command]
+        public void CmdDeath()
+        {
+            Debug.Log("CMD death");
+            RpcDeath();
+        }
+        void Respawn()
+        {
+            if (isLocalPlayer)
+            {
+                playerControler.enabled = false;
+                playerInput.enabled = false;
+                deathPanel.SetActive(false);
             }
         }
 
@@ -161,25 +217,26 @@ namespace GunBall.Mirror
                     var randomPosition = teamPositions[randomIndex];
                     SpawnOffset spawnOffset = randomPosition.GetComponent<SpawnOffset>();
                     if (spawnOffset != null)
+                    {
                         player.gameplayerPlayer.transform.position = spawnOffset.GetOffset();
+                    }
+                    respawnPosition = player.gameplayerPlayer.transform.position;
 
+                    playerControler = player.gameplayerPlayer.GetComponent<PlayerController>();
+                    playerInput = player.gameplayerPlayer.GetComponent<PlayerInput>();
                     //enable network player setup script
                     player.gameplayerPlayer.GetComponent<NetworkPlayerControllerSetup>().enabled = true;
 
-                    playerInput = gameplayerPlayer.GetComponent<PlayerInput>();
-
-                    fireAction = playerInput.actions.FindAction("Fire");
-                    fireAction.Enable();
-                    fireAction.performed += OnFirePerformed;
+                    
                 }
             }
         }
-        private void OnFirePerformed(InputAction.CallbackContext _context)
-        {
-            if (!gameplayerPlayer.GetComponent<PlayerController>().holdingBall)
-            {
-                gameplayerPlayer.GetComponent<PlayerController>().currentGun.Shoot();
-            }
-        }
+        //private void OnFirePerformed(InputAction.CallbackContext _context)
+        //{
+        //    if (!gameplayerPlayer.GetComponent<PlayerController>().holdingBall)
+        //    {
+        //        gameplayerPlayer.GetComponent<PlayerController>().currentGun.Shoot();
+        //    }
+        //}
     }
 }

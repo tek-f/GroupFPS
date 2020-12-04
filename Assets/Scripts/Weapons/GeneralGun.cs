@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using GunBall.Player;
+using GunBall.Mirror;
 using TMPro;
 
 namespace GunBall.Weapons
@@ -147,7 +148,7 @@ namespace GunBall.Weapons
                     if (hit.transform.GetComponent<PlayerController>())
                     {
                         Debug.Log("target hit, " + damage + " damage taken");
-                        hit.transform.GetComponent<Killable>().TakeDamage(damage, player);
+                        hit.transform.GetComponentInParent<Mirror.NetworkPlayer>().PublicTakeDamage(damage);
                     }
                     if(hit.transform.GetComponent<Rigidbody>())
                     {

@@ -65,7 +65,7 @@ namespace GunBall.Player
         InputAction lookAction;
         InputAction jumpAction;
         InputAction reloadAction;
-        //InputAction fireAction;
+        InputAction fireAction;
         InputAction swapAction;
         InputAction interactAction;
         InputAction crouchAction;
@@ -100,13 +100,13 @@ namespace GunBall.Player
                 velocity.y += jumpSpeed;
             }
         }
-        //private void OnFirePerformed(InputAction.CallbackContext _context)
-        //{
-        //    if (!holdingBall)
-        //    {
-
-        //    }
-        //}
+        private void OnFirePerformed(InputAction.CallbackContext _context)
+        {
+            if (!holdingBall)
+            {
+                currentGun.Shoot();
+            }
+        }
         private void OnReloadPerformed(InputAction.CallbackContext _context)
         {
             if (!holdingBall)
@@ -215,6 +215,7 @@ namespace GunBall.Player
             gameBall = ball;
             cameraTransform = gameObject.GetComponentInChildren<Camera>().transform;
             charControl = gameObject.GetComponent<CharacterController>();
+            //GetComponentInParent<Mirror.NetworkPlayer>().respawnPosition = transform.position;
 
             Cursor.lockState = CursorLockMode.Locked;
             currentSpeed = normalSpeed;
@@ -368,9 +369,9 @@ namespace GunBall.Player
             reloadAction.Enable();
             reloadAction.performed += OnReloadPerformed;
 
-            //fireAction = playerInput.actions.FindAction("Fire");
-            //fireAction.Enable();
-            //fireAction.performed += OnFirePerformed;
+            fireAction = playerInput.actions.FindAction("Fire");
+            fireAction.Enable();
+            fireAction.performed += OnFirePerformed;
 
             sprintAction = playerInput.actions.FindAction("Sprint");
             sprintAction.Enable();
